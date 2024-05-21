@@ -6447,15 +6447,24 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 var VisualAudioPlayer = /*#__PURE__*/function () {
   function VisualAudioPlayer(videoVast, audioVast) {
+    var log = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     _classCallCheck(this, VisualAudioPlayer);
     this.videoVast = videoVast;
     this.audioVast = audioVast;
+    this.logger = log;
     this.videoParsedXmlData = null;
     this.audioParsedXmlData = null;
     this.audioInlineVastData = null;
     this.audioEvents = null;
     this.videoSrc = null;
     this.audioSrc = null;
+    this.audioPaused = false;
+    this.isLooped = false;
+    this.timeElasped = {
+      firstQuartile: false,
+      midpoint: false,
+      thirdQuartile: false
+    };
     this.initializePlayers();
   }
   return _createClass(VisualAudioPlayer, [{
@@ -6479,8 +6488,11 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
               this.createVideoPlayer();
               this.createAudioPlayer();
               this.wrapPlayers();
+              if (this.logger) {
+                this.createLoggerElement();
+              }
               this.addEventListeners();
-            case 7:
+            case 8:
             case "end":
               return _context.stop();
           }
@@ -6615,8 +6627,12 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
     key: "createVideoPlayer",
     value: function createVideoPlayer() {
       this.videoPlayer = document.createElement('video');
+      this.videoBtn = document.createElement('button');
+      this.videoBtn.id = 'visualAudioPlayBtn';
+      this.videoBtn.className = "visual-audio-play-pause-btn";
+      this.videoBtn.innerHTML = "&#9658;";
       this.videoPlayer.src = this.videoSrc.uri;
-      this.videoPlayer.controls = true;
+      this.videoPlayer.controls = false;
     }
   }, {
     key: "createAudioPlayer",
@@ -6631,11 +6647,28 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.wrapperDiv = document.getElementById('visual_audio_player');
       this.wrapperDiv.appendChild(this.videoPlayer);
       this.wrapperDiv.appendChild(this.audioPlayer);
+      this.wrapperDiv.appendChild(this.videoBtn);
+    }
+  }, {
+    key: "createLoggerElement",
+    value: function createLoggerElement() {
+      this.loggerList = document.createElement('ul');
+      this.wrapperDiv = document.getElementById('visual_audio_slot');
+      this.wrapperDiv.appendChild(this.loggerList);
     }
   }, {
     key: "addEventListeners",
     value: function addEventListeners() {
       var _this = this;
+      this.videoBtn.addEventListener('click', function () {
+        if (_this.videoPlayer.paused) {
+          _this.videoPlayer.play();
+          _this.videoBtn.innerHTML = '&#10074; &#10074;';
+        } else {
+          _this.videoPlayer.pause();
+          _this.videoBtn.innerHTML = "&#9658;";
+        }
+      });
       this.videoPlayer.addEventListener('play', function () {
         return _this.visualAudioSyncPlay();
       });
@@ -6648,13 +6681,50 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.videoPlayer.addEventListener('volumechange', function () {
         return _this.visualAudioSyncVolume();
       });
-
-      // this.videoPlayer.addEventListener('canplay', () => this.checkCanPlay());
-      // this.audioPlayer.addEventListener('canplay', () => this.checkCanPlay());
-
-      // this.videoPlayer.addEventListener('play', () => this.triggerEvent('play'));
-      // this.videoPlayer.addEventListener('pause', () => this.triggerEvent('pause'));
-      // this.videoPlayer.addEventListener('ended', () => this.triggerEvent('complete'));
+      this.triggerEvent('impression');
+      this.audioPlayer.addEventListener('play', function () {
+        if (!_this.audioPaused) {
+          _this.triggerEvent('start');
+        } else {
+          _this.triggerEvent('resume');
+          _this.audioPaused = false;
+        }
+      });
+      this.audioPlayer.addEventListener('pause', function () {
+        if (!_this.audioPlayer.ended) {
+          _this.triggerEvent('pause');
+          _this.audioPaused = true;
+        }
+      });
+      this.audioPlayer.addEventListener('volumechange', function () {
+        if (_this.audioPlayer.muted) {
+          _this.triggerEvent('mute');
+        } else {
+          _this.triggerEvent('unmute');
+        }
+      });
+      this.audioPlayer.addEventListener('ended', function () {
+        _this.triggerEvent('complete');
+        if (!_this.videoPlayer.paused) {
+          _this.videoPlayer.pause();
+          _this.videoBtn.innerHTML = "&#9658;";
+        }
+      });
+      this.audioPlayer.addEventListener('timeupdate', function () {
+        var currentTime = _this.audioPlayer.currentTime;
+        var duration = _this.audioPlayer.duration;
+        var quartile = duration / 4;
+        if (currentTime >= quartile && !_this.timeElasped.firstQuartile) {
+          _this.triggerEvent('firstQuartile');
+          _this.timeElasped.firstQuartile = true;
+        } else if (currentTime >= quartile * 2 && !_this.timeElasped.midpoint) {
+          _this.triggerEvent('midpoint');
+          _this.timeElasped.midpoint = true;
+        } else if (currentTime >= quartile * 3 && !_this.timeElasped.thirdQuartile) {
+          _this.triggerEvent('thirdQuartile');
+          _this.timeElasped.thirdQuartile = true;
+        }
+      });
       // this.videoPlayer.addEventListener('click', () => this.triggerClickThrough());
     }
   }, {
@@ -6667,14 +6737,22 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
   }, {
     key: "visualAudioSyncPause",
     value: function visualAudioSyncPause() {
-      if (!this.audioPlayer.paused) {
+      if (this.audioPlayer.duration > this.audioPlayer.currentTime) {
+        this.videoPlayer.currentTime = 0;
+        this.videoPlayer.play();
+        this.isLooped = true;
+      } else if (!this.audioPlayer.paused) {
         this.audioPlayer.pause();
       }
     }
   }, {
     key: "visualAudioSyncSeek",
     value: function visualAudioSyncSeek() {
-      this.audioPlayer.currentTime = this.videoPlayer.currentTime;
+      if (this.isLooped) {
+        this.isLooped = false;
+      } else {
+        this.audioPlayer.currentTime = this.videoPlayer.currentTime;
+      }
     }
   }, {
     key: "visualAudioSyncVolume",
@@ -6682,41 +6760,24 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.audioPlayer.volume = this.videoPlayer.volume;
     }
   }, {
-    key: "checkCanPlay",
-    value: function checkCanPlay() {
-      if (this.videoPlayer.readyState >= 3 && this.audioPlayer.readyState >= 3) {
-        this.visualAudioOnReady();
-      }
-    }
-  }, {
-    key: "visualAudioOnReady",
-    value: function visualAudioOnReady() {
-      this.triggerEvent('impressions');
-      fetch('https://example.com/api/onReady', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          status: 'ready'
-        })
-      }).then(function (response) {
-        return response.json();
-      }).then(function (data) {
-        return console.log('API Response:', data);
-      })["catch"](function (error) {
-        return console.error('Error:', error);
-      });
-    }
-  }, {
     key: "triggerEvent",
     value: function triggerEvent(eventType) {
-      if (this.videoTrackingEvents.events[eventType]) {
-        this.videoTrackingEvents.events[eventType].forEach(function (url) {
-          fetch(url, {
-            method: 'GET'
-          });
+      var _this$audioEvents, _this$audioEvents2;
+      if ((_this$audioEvents = this.audioEvents) !== null && _this$audioEvents !== void 0 && (_this$audioEvents = _this$audioEvents.trackingEvents[eventType]) !== null && _this$audioEvents !== void 0 && _this$audioEvents.length) {
+        fetch(this.audioEvents.trackingEvents[eventType][0].uri, {
+          method: 'GET',
+          mode: "no-cors"
         });
+      } else if (eventType === 'impression' && (_this$audioEvents2 = this.audioEvents) !== null && _this$audioEvents2 !== void 0 && (_this$audioEvents2 = _this$audioEvents2.impressions) !== null && _this$audioEvents2 !== void 0 && _this$audioEvents2.length) {
+        fetch(this.audioEvents.impressions[0].uri, {
+          method: 'GET',
+          mode: "no-cors"
+        });
+      }
+      if (this.logger) {
+        var log = document.createElement('li');
+        log.innerHTML = eventType;
+        this.loggerList.appendChild(log);
       }
     }
   }, {

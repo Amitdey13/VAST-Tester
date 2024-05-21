@@ -2,15 +2,19 @@ import { VASTLoader } from 'iab-vast-loader';
 import { warn, xmlToJSON } from "./utils";
 
 class VisualAudioPlayer {
-    constructor(videoVast, audioVast) {
+    constructor(videoVast, audioVast, log = false) {
         this.videoVast = videoVast;
         this.audioVast = audioVast;
+        this.logger = log;
         this.videoParsedXmlData = null;
         this.audioParsedXmlData = null;
         this.audioInlineVastData = null;
         this.audioEvents = null;
         this.videoSrc = null;
         this.audioSrc = null;
+        this.audioPaused = false;
+        this.isLooped = false;
+        this.timeElasped = { firstQuartile: false, midpoint: false, thirdQuartile: false }
         this.initializePlayers();
     }
 
@@ -27,6 +31,9 @@ class VisualAudioPlayer {
         this.createVideoPlayer();
         this.createAudioPlayer();
         this.wrapPlayers();
+        if (this.logger) {
+            this.createLoggerElement();
+        }
         this.addEventListeners();
     }
 
@@ -106,8 +113,12 @@ class VisualAudioPlayer {
 
     createVideoPlayer() {
         this.videoPlayer = document.createElement('video');
+        this.videoBtn = document.createElement('button');
+        this.videoBtn.id = 'visualAudioPlayBtn';
+        this.videoBtn.className = "visual-audio-play-pause-btn";
+        this.videoBtn.innerHTML = "&#9658;"
         this.videoPlayer.src = this.videoSrc.uri;
-        this.videoPlayer.controls = true;
+        this.videoPlayer.controls = false;
     }
 
     createAudioPlayer() {
@@ -120,20 +131,76 @@ class VisualAudioPlayer {
         this.wrapperDiv = document.getElementById('visual_audio_player');
         this.wrapperDiv.appendChild(this.videoPlayer);
         this.wrapperDiv.appendChild(this.audioPlayer);
+        this.wrapperDiv.appendChild(this.videoBtn);
+    }
+    
+    createLoggerElement() {
+        this.loggerList = document.createElement('ul');
+        this.wrapperDiv = document.getElementById('visual_audio_slot');
+        this.wrapperDiv.appendChild(this.loggerList);
     }
 
     addEventListeners() {
+        this.videoBtn.addEventListener('click', () => {
+            if (this.videoPlayer.paused) {
+                this.videoPlayer.play();
+                this.videoBtn.innerHTML = '&#10074; &#10074;';
+            } else {
+                this.videoPlayer.pause();
+                this.videoBtn.innerHTML = "&#9658;"
+            }
+        });
+
         this.videoPlayer.addEventListener('play', () => this.visualAudioSyncPlay());
         this.videoPlayer.addEventListener('pause', () => this.visualAudioSyncPause());
         this.videoPlayer.addEventListener('seeking', () => this.visualAudioSyncSeek());
         this.videoPlayer.addEventListener('volumechange', () => this.visualAudioSyncVolume());
-
-        // this.videoPlayer.addEventListener('canplay', () => this.checkCanPlay());
-        // this.audioPlayer.addEventListener('canplay', () => this.checkCanPlay());
-
-        // this.videoPlayer.addEventListener('play', () => this.triggerEvent('play'));
-        // this.videoPlayer.addEventListener('pause', () => this.triggerEvent('pause'));
-        // this.videoPlayer.addEventListener('ended', () => this.triggerEvent('complete'));
+        
+        this.triggerEvent('impression');
+        this.audioPlayer.addEventListener('play', () => {
+            if (!this.audioPaused) {
+                this.triggerEvent('start');
+            } else {
+                this.triggerEvent('resume');
+                this.audioPaused = false;
+            }
+        });        
+        this.audioPlayer.addEventListener('pause', () => {
+            if (!this.audioPlayer.ended) {
+                this.triggerEvent('pause');
+                this.audioPaused = true;
+            }
+        });
+        this.audioPlayer.addEventListener('volumechange', () => {
+            if(this.audioPlayer.muted) {
+                this.triggerEvent('mute');
+            } else {
+                this.triggerEvent('unmute');
+            }
+        });
+        this.audioPlayer.addEventListener('ended', () => {
+            this.triggerEvent('complete');
+            if (!this.videoPlayer.paused) {
+                this.videoPlayer.pause();
+                this.videoBtn.innerHTML = "&#9658;"
+            }
+        });
+        this.audioPlayer.addEventListener('timeupdate', () => {
+            const currentTime = this.audioPlayer.currentTime;
+            const duration = this.audioPlayer.duration;
+            const quartile = duration / 4;
+        
+            if (currentTime >= quartile && !this.timeElasped.firstQuartile) {
+                this.triggerEvent('firstQuartile');
+                this.timeElasped.firstQuartile = true;
+            } else if (currentTime >= quartile * 2 && !this.timeElasped.midpoint) {
+                this.triggerEvent('midpoint');
+                this.timeElasped.midpoint = true;
+            } else if (currentTime >= quartile * 3 && !this.timeElasped.thirdQuartile) {
+                this.triggerEvent('thirdQuartile');
+                this.timeElasped.thirdQuartile = true;
+            }
+        });
         // this.videoPlayer.addEventListener('click', () => this.triggerClickThrough());
     }
 
@@ -144,43 +211,37 @@ class VisualAudioPlayer {
     }
 
     visualAudioSyncPause() {
-        if (!this.audioPlayer.paused) {
+        if (this.audioPlayer.duration > this.audioPlayer.currentTime) {
+            this.videoPlayer.currentTime = 0;
+            this.videoPlayer.play();
+            this.isLooped = true;
+        } else if (!this.audioPlayer.paused) {
             this.audioPlayer.pause();
         }
     }
 
     visualAudioSyncSeek() {
-        this.audioPlayer.currentTime = this.videoPlayer.currentTime;
+        if (this.isLooped) {
+            this.isLooped = false;
+        } else {
+            this.audioPlayer.currentTime = this.videoPlayer.currentTime;
+        }
     }
 
     visualAudioSyncVolume() {
         this.audioPlayer.volume = this.videoPlayer.volume;
     }
 
-    checkCanPlay() {
-        if (this.videoPlayer.readyState >= 3 && this.audioPlayer.readyState >= 3) {
-            this.visualAudioOnReady();
-        }
-    }
-
-    visualAudioOnReady() {
-        this.triggerEvent('impressions');
-        fetch('https://example.com/api/onReady', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ status: 'ready' })
-        }).then(response => response.json())
-            .then(data => console.log('API Response:', data))
-            .catch(error => console.error('Error:', error));
-    }
-
     triggerEvent(eventType) {
-        if (this.videoTrackingEvents.events[eventType]) {
-            this.videoTrackingEvents.events[eventType].forEach(url => {
-                fetch(url, { method: 'GET' });
-            });
+        if (this.audioEvents?.trackingEvents[eventType]?.length) {
+            fetch(this.audioEvents.trackingEvents[eventType][0].uri, { method: 'GET', mode: "no-cors" });
+        } else if (eventType === 'impression' && this.audioEvents?.impressions?.length) {
+            fetch(this.audioEvents.impressions[0].uri, { method: 'GET', mode: "no-cors" });
+        }
+        if (this.logger) {
+            const log = document.createElement('li');
+            log.innerHTML = eventType;
+            this.loggerList.appendChild(log);
         }
     }
 
