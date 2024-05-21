@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VAST Loader Example</title>
     <style>
-        #visual_audio_player {
+        /* #visual_audio_player {
             position: relative;
-        }
+        } */
 
         #visual_audio_player video {
-            width: 500px;
+            height: 400px;
         }
 
         ul {
@@ -28,7 +28,12 @@
             position: relative;
         }
 
-        .visual-audio-play-pause-btn {
+        #visual_audio_slot {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        /* .visual-audio-play-pause-btn {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -40,10 +45,6 @@
             font-size: 2em;
             cursor: pointer;
             display: block;
-        }
-
-        #visual_audio_slot {
-            display: flex;
         }
 
         #vastForm {
@@ -83,27 +84,28 @@
         }
         #vastForm button:hover {
             background-color: #0056b3;
-        }
+        } */
     </style>
 </head>
 
 <body>
-    <form id="vastForm">
+    <!-- <form id="vastForm">
         <label for="vastUrl">VAST URL:</label>
         <input type="text" id="vastVideoUrl" placeholder="video vast" name="vastUrl" required>
         <input type="text" id="vastAudioUrl" placeholder="audio vast" name="vastUrl" required>
         <button type="submit">Test Ad</button>
-    </form>
+    </form> -->
     <div id="visual_audio_slot">
         <div id="visual_audio_player"></div>
         <script src="dist/bundle.js"></script>
         <script defer>
-            document.getElementById('vastForm').addEventListener('submit', function(event) {
-                event.preventDefault();
-                const vastVideoUrl = document.getElementById('vastVideoUrl').value;
-                const vastAudioUrl = document.getElementById('vastAudioUrl').value;
-                new VisualAudioPlayer(vastVideoUrl ,vastAudioUrl, true);
-            })
+            // document.getElementById('vastForm').addEventListener('submit', function(event) {
+            //     event.preventDefault();
+            //     const vastVideoUrl = document.getElementById('vastVideoUrl').value;
+            //     const vastAudioUrl = document.getElementById('vastAudioUrl').value;
+            //     new VisualAudioPlayer(vastVideoUrl ,vastAudioUrl, true);
+            // })
+            new VisualAudioPlayer("https://visual-audio.s3.amazonaws.com/video-vast/Sample_Video_VAST.xml" ,"https://visual-audio.s3.amazonaws.com/audio-vast/Sample_Audio_VAST.xml", true);
         </script>
     </div>
     

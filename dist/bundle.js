@@ -6445,6 +6445,10 @@ function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" 
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 
 
+var playSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="18" viewBox="0 0 384 512"><<path fill="#ffffff" d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>';
+var pauseSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="15" viewBox="0 0 320 512"><path fill="#ffffff" d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg>';
+var muteSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="27" viewBox="0 0 576 512"><path fill="#ffffff" d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM425 167l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0z"/></svg>';
+var unmuteSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="21" viewBox="0 0 448 512"><path fill="#ffffff" d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM412.6 181.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5z"/></svg>';
 var VisualAudioPlayer = /*#__PURE__*/function () {
   function VisualAudioPlayer(videoVast, audioVast) {
     var log = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
@@ -6487,12 +6491,14 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
               });
               this.createVideoPlayer();
               this.createAudioPlayer();
+              this.createPlayerControls();
               this.wrapPlayers();
               if (this.logger) {
                 this.createLoggerElement();
               }
               this.addEventListeners();
-            case 8:
+              this.addControlEvents();
+            case 10:
             case "end":
               return _context.stop();
           }
@@ -6627,12 +6633,9 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
     key: "createVideoPlayer",
     value: function createVideoPlayer() {
       this.videoPlayer = document.createElement('video');
-      this.videoBtn = document.createElement('button');
-      this.videoBtn.id = 'visualAudioPlayBtn';
-      this.videoBtn.className = "visual-audio-play-pause-btn";
-      this.videoBtn.innerHTML = "&#9658;";
       this.videoPlayer.src = this.videoSrc.uri;
       this.videoPlayer.controls = false;
+      this.videoPlayer.muted = true;
     }
   }, {
     key: "createAudioPlayer",
@@ -6642,12 +6645,41 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.audioPlayer.controls = false;
     }
   }, {
+    key: "createPlayerControls",
+    value: function createPlayerControls() {
+      this.controlsContainer = document.createElement('div');
+      this.videoBtn = this.createButton();
+      this.videoBtn.innerHTML = playSvg;
+      this.soundBtn = this.createButton();
+      this.soundBtn.innerHTML = unmuteSvg;
+      this.controlsContainer.appendChild(this.videoBtn);
+      this.controlsContainer.appendChild(this.soundBtn);
+      this.controlsContainer.style.display = 'flex';
+      this.controlsContainer.style.width = '90%';
+      this.controlsContainer.style.justifyContent = 'space-between';
+      this.controlsContainer.style.position = 'absolute';
+      this.controlsContainer.style.paddingInline = '5%';
+      this.controlsContainer.style.bottom = '10%';
+    }
+  }, {
+    key: "createButton",
+    value: function createButton() {
+      var button = document.createElement('button');
+      button.style.backgroundColor = 'transparent';
+      button.style.color = 'white';
+      button.style.border = 'none';
+      button.style.cursor = 'pointer';
+      button.style.fontSize = '1.5em';
+      return button;
+    }
+  }, {
     key: "wrapPlayers",
     value: function wrapPlayers() {
       this.wrapperDiv = document.getElementById('visual_audio_player');
+      this.wrapperDiv.style.position = 'relative';
       this.wrapperDiv.appendChild(this.videoPlayer);
       this.wrapperDiv.appendChild(this.audioPlayer);
-      this.wrapperDiv.appendChild(this.videoBtn);
+      this.wrapperDiv.appendChild(this.controlsContainer);
     }
   }, {
     key: "createLoggerElement",
@@ -6657,72 +6689,83 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.wrapperDiv.appendChild(this.loggerList);
     }
   }, {
-    key: "addEventListeners",
-    value: function addEventListeners() {
+    key: "addControlEvents",
+    value: function addControlEvents() {
       var _this = this;
       this.videoBtn.addEventListener('click', function () {
         if (_this.videoPlayer.paused) {
           _this.videoPlayer.play();
-          _this.videoBtn.innerHTML = '&#10074; &#10074;';
+          _this.videoBtn.innerHTML = pauseSvg;
         } else {
           _this.videoPlayer.pause();
-          _this.videoBtn.innerHTML = "&#9658;";
+          _this.videoBtn.innerHTML = playSvg;
         }
       });
+      this.soundBtn.addEventListener('click', function () {
+        if (_this.audioPlayer.muted) {
+          _this.audioPlayer.muted = false;
+          _this.soundBtn.innerHTML = unmuteSvg;
+        } else {
+          _this.audioPlayer.muted = true;
+          _this.soundBtn.innerHTML = muteSvg;
+        }
+      });
+    }
+  }, {
+    key: "addEventListeners",
+    value: function addEventListeners() {
+      var _this2 = this;
       this.videoPlayer.addEventListener('play', function () {
-        return _this.visualAudioSyncPlay();
+        return _this2.visualAudioSyncPlay();
       });
       this.videoPlayer.addEventListener('pause', function () {
-        return _this.visualAudioSyncPause();
-      });
-      this.videoPlayer.addEventListener('seeking', function () {
-        return _this.visualAudioSyncSeek();
+        return _this2.visualAudioSyncPause();
       });
       this.videoPlayer.addEventListener('volumechange', function () {
-        return _this.visualAudioSyncVolume();
+        return _this2.visualAudioSyncVolume();
       });
       this.triggerEvent('impression');
       this.audioPlayer.addEventListener('play', function () {
-        if (!_this.audioPaused) {
-          _this.triggerEvent('start');
+        if (!_this2.audioPaused) {
+          _this2.triggerEvent('start');
         } else {
-          _this.triggerEvent('resume');
-          _this.audioPaused = false;
+          _this2.triggerEvent('resume');
+          _this2.audioPaused = false;
         }
       });
       this.audioPlayer.addEventListener('pause', function () {
-        if (!_this.audioPlayer.ended) {
-          _this.triggerEvent('pause');
-          _this.audioPaused = true;
+        if (!_this2.audioPlayer.ended) {
+          _this2.triggerEvent('pause');
+          _this2.audioPaused = true;
         }
       });
       this.audioPlayer.addEventListener('volumechange', function () {
-        if (_this.audioPlayer.muted) {
-          _this.triggerEvent('mute');
+        if (_this2.audioPlayer.muted) {
+          _this2.triggerEvent('mute');
         } else {
-          _this.triggerEvent('unmute');
+          _this2.triggerEvent('unmute');
         }
       });
       this.audioPlayer.addEventListener('ended', function () {
-        _this.triggerEvent('complete');
-        if (!_this.videoPlayer.paused) {
-          _this.videoPlayer.pause();
-          _this.videoBtn.innerHTML = "&#9658;";
+        _this2.triggerEvent('complete');
+        if (!_this2.videoPlayer.paused) {
+          _this2.videoPlayer.pause();
+          _this2.videoBtn.innerHTML = playSvg;
         }
       });
       this.audioPlayer.addEventListener('timeupdate', function () {
-        var currentTime = _this.audioPlayer.currentTime;
-        var duration = _this.audioPlayer.duration;
+        var currentTime = _this2.audioPlayer.currentTime;
+        var duration = _this2.audioPlayer.duration;
         var quartile = duration / 4;
-        if (currentTime >= quartile && !_this.timeElasped.firstQuartile) {
-          _this.triggerEvent('firstQuartile');
-          _this.timeElasped.firstQuartile = true;
-        } else if (currentTime >= quartile * 2 && !_this.timeElasped.midpoint) {
-          _this.triggerEvent('midpoint');
-          _this.timeElasped.midpoint = true;
-        } else if (currentTime >= quartile * 3 && !_this.timeElasped.thirdQuartile) {
-          _this.triggerEvent('thirdQuartile');
-          _this.timeElasped.thirdQuartile = true;
+        if (currentTime >= quartile && !_this2.timeElasped.firstQuartile) {
+          _this2.triggerEvent('firstQuartile');
+          _this2.timeElasped.firstQuartile = true;
+        } else if (currentTime >= quartile * 2 && !_this2.timeElasped.midpoint) {
+          _this2.triggerEvent('midpoint');
+          _this2.timeElasped.midpoint = true;
+        } else if (currentTime >= quartile * 3 && !_this2.timeElasped.thirdQuartile) {
+          _this2.triggerEvent('thirdQuartile');
+          _this2.timeElasped.thirdQuartile = true;
         }
       });
       // this.videoPlayer.addEventListener('click', () => this.triggerClickThrough());
@@ -6737,21 +6780,12 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
   }, {
     key: "visualAudioSyncPause",
     value: function visualAudioSyncPause() {
-      if (this.audioPlayer.duration > this.audioPlayer.currentTime) {
+      if (this.videoPlayer.ended && this.audioPlayer.duration > this.audioPlayer.currentTime) {
         this.videoPlayer.currentTime = 0;
         this.videoPlayer.play();
         this.isLooped = true;
       } else if (!this.audioPlayer.paused) {
         this.audioPlayer.pause();
-      }
-    }
-  }, {
-    key: "visualAudioSyncSeek",
-    value: function visualAudioSyncSeek() {
-      if (this.isLooped) {
-        this.isLooped = false;
-      } else {
-        this.audioPlayer.currentTime = this.videoPlayer.currentTime;
       }
     }
   }, {
@@ -6762,18 +6796,11 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
   }, {
     key: "triggerEvent",
     value: function triggerEvent(eventType) {
-      var _this$audioEvents, _this$audioEvents2;
-      if ((_this$audioEvents = this.audioEvents) !== null && _this$audioEvents !== void 0 && (_this$audioEvents = _this$audioEvents.trackingEvents[eventType]) !== null && _this$audioEvents !== void 0 && _this$audioEvents.length) {
-        fetch(this.audioEvents.trackingEvents[eventType][0].uri, {
-          method: 'GET',
-          mode: "no-cors"
-        });
-      } else if (eventType === 'impression' && (_this$audioEvents2 = this.audioEvents) !== null && _this$audioEvents2 !== void 0 && (_this$audioEvents2 = _this$audioEvents2.impressions) !== null && _this$audioEvents2 !== void 0 && _this$audioEvents2.length) {
-        fetch(this.audioEvents.impressions[0].uri, {
-          method: 'GET',
-          mode: "no-cors"
-        });
-      }
+      // if (this.audioEvents?.trackingEvents[eventType]?.length) {
+      //     fetch(this.audioEvents.trackingEvents[eventType][0].uri, { method: 'GET', mode: "no-cors" });
+      // } else if (eventType === 'impression' && this.audioEvents?.impressions?.length) {
+      //     fetch(this.audioEvents.impressions[0].uri, { method: 'GET', mode: "no-cors" });
+      // }
       if (this.logger) {
         var log = document.createElement('li');
         log.innerHTML = eventType;
