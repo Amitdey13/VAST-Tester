@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const jsonLinear = xmlToJSON(linear);
                 const mediaFile = jsonLinear.mediaFiles[0];
                 // console.log(jsonVast);
-                console.log({jsonInline});
+                console.log(jsonInline);
                 // console.log(events);
                 const visualAudioAddSlot = document.getElementById('visualAudioAddSlot');
                 if (mediaFile.type.includes('audio')) {
@@ -69,7 +69,7 @@ function logEvents(type, url) {
     logEle.innerHTML = `Event: ${type}`;
     const logEleUrl = document.createElement('li');
     logEle.innerHTML = `${type}: ${url}`;
-    fetch(url);
+    // fetch(url, { mode: "no-cors" });
     logList.appendChild(logEle);
     logList.appendChild(logEleUrl);
 }
@@ -77,6 +77,7 @@ function logEvents(type, url) {
 const warn = (message, data) => console.warn({ message, data });
 
 const getAdFromVast = (type, warn) => vast => {
+    console.log(vast);
     if (vast.version >= '4.0') {
         warn('Support for VAST 4 is incomplete', vast.uri)
     }

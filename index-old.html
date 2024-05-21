@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAST Loader Example</title>
+    <style>
+        .visual-audio-video-container {
+            position: relative;
+        }
+
+        #visualAudioAddVideoContainer {
+            width: 100%;
+            height: 100%;
+        }
+
+        .visual-audio-play-pause-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: transparent;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 2em;
+            cursor: pointer;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>VAST Loader Example</h1>
+    <form id="vastForm">
+        <label for="vastUrl">VAST URL:</label>
+        <input type="text" id="vastUrl" name="vastUrl" required>
+        <button type="submit">Load VAST</button>
+    </form>
+    <div id="visualAudioAddSlot"></div>
+    <ul id="visualLog"></ul>
+    <script src="dist/bundle.js" defer></script>
+</body>
+
+</html>

@@ -10,7 +10,7 @@
             position: relative;
         }
 
-        #visualAudioAddVideoContainer {
+        .visual_audio_video_container {
             width: 100%;
             height: 100%;
         }
@@ -28,19 +28,68 @@
             cursor: pointer;
             display: block;
         }
+
+        #vastForm {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        #vastForm label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        #vastForm input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        #vastForm button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #vastForm button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 
 <body>
-    <h1>VAST Loader Example</h1>
     <form id="vastForm">
         <label for="vastUrl">VAST URL:</label>
-        <input type="text" id="vastUrl" name="vastUrl" required>
-        <button type="submit">Load VAST</button>
+        <input type="text" id="vastVideoUrl" placeholder="video vast" name="vastUrl" required>
+        <input type="text" id="vastAudioUrl" placeholder="audio vast" name="vastUrl" required>
+        <button type="submit">Test Ad</button>
     </form>
-    <div id="visualAudioAddSlot"></div>
+    <div id="visual_audio_slot">
+        <div id="visual_audio_player"></div>
+        <script src="dist/bundle.js"></script>
+        <script defer>
+            document.getElementById('vastForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+                const vastVideoUrl = document.getElementById('vastVideoUrl').value;
+                const vastAudioUrl = document.getElementById('vastAudioUrl').value;
+                new VisualAudioPlayer(vastVideoUrl ,vastAudioUrl);
+            })
+        </script>
+    </div>
     <ul id="visualLog"></ul>
-    <script src="dist/bundle.js" defer></script>
 </body>
 
 </html>
