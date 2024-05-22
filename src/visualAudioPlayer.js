@@ -284,14 +284,22 @@ class VisualAudioPlayer {
     }
 
     triggerEvent(eventType) {
+        let uri = null;
         if (this.audioEvents?.trackingEvents[eventType]?.length) {
+            uri = this.audioEvents.trackingEvents[eventType][0].uri;
             fetch(this.audioEvents.trackingEvents[eventType][0].uri, { method: 'GET', mode: "no-cors" });
         } else if (eventType === 'impression' && this.audioEvents?.impressions?.length) {
+            uri = this.audioEvents.impressions[0].uri;
             fetch(this.audioEvents.impressions[0].uri, { method: 'GET', mode: "no-cors" });
         }
         if (this.logger) {
             const log = document.createElement('li');
-            log.innerHTML = eventType;
+            const eventSpan = document.createElement('div');
+            eventSpan.innerHTML = `<strong>Event:</strong> ${eventType}`;
+            const uriSpan = document.createElement('div');
+            uriSpan.innerHTML = `<strong>URL:</strong> ${uri}`;
+            log.appendChild(eventSpan);
+            log.appendChild(uriSpan);
             this.loggerList.appendChild(log);
         }
     }

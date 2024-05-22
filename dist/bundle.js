@@ -6817,12 +6817,15 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
     key: "triggerEvent",
     value: function triggerEvent(eventType) {
       var _this$audioEvents, _this$audioEvents2;
+      var uri = null;
       if ((_this$audioEvents = this.audioEvents) !== null && _this$audioEvents !== void 0 && (_this$audioEvents = _this$audioEvents.trackingEvents[eventType]) !== null && _this$audioEvents !== void 0 && _this$audioEvents.length) {
+        uri = this.audioEvents.trackingEvents[eventType][0].uri;
         fetch(this.audioEvents.trackingEvents[eventType][0].uri, {
           method: 'GET',
           mode: "no-cors"
         });
       } else if (eventType === 'impression' && (_this$audioEvents2 = this.audioEvents) !== null && _this$audioEvents2 !== void 0 && (_this$audioEvents2 = _this$audioEvents2.impressions) !== null && _this$audioEvents2 !== void 0 && _this$audioEvents2.length) {
+        uri = this.audioEvents.impressions[0].uri;
         fetch(this.audioEvents.impressions[0].uri, {
           method: 'GET',
           mode: "no-cors"
@@ -6830,7 +6833,12 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       }
       if (this.logger) {
         var log = document.createElement('li');
-        log.innerHTML = eventType;
+        var eventSpan = document.createElement('div');
+        eventSpan.innerHTML = "<strong>Event:</strong> ".concat(eventType);
+        var uriSpan = document.createElement('div');
+        uriSpan.innerHTML = "<strong>URL:</strong> ".concat(uri);
+        log.appendChild(eventSpan);
+        log.appendChild(uriSpan);
         this.loggerList.appendChild(log);
       }
     }
