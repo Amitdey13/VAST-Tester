@@ -19,6 +19,7 @@
             padding: 0;
             margin-left: 30px;
         }
+
         li {
             margin: 5px 0;
             padding: 10px;
@@ -99,16 +100,16 @@
         <div id="visual_audio_player"></div>
         <script src="dist/bundle.js"></script>
         <script defer>
-            // document.getElementById('vastForm').addEventListener('submit', function(event) {
-            //     event.preventDefault();
-            //     const vastVideoUrl = document.getElementById('vastVideoUrl').value;
-            //     const vastAudioUrl = document.getElementById('vastAudioUrl').value;
-            //     new VisualAudioPlayer(vastVideoUrl ,vastAudioUrl, true);
-            // })
-            new VisualAudioPlayer("https://visual-audio.s3.amazonaws.com/video-vast/Sample_Video_VAST.xml" ,"https://visual-audio.s3.amazonaws.com/audio-vast/Sample_Audio_VAST.xml", true);
+            new VisualAudioPlayer("https://visual-audio.s3.amazonaws.com/video-vast/Sample_Video_VAST.xml", "https://visual-audio.s3.amazonaws.com/audio-vast/Sample_Audio_VAST.xml", true);
         </script>
     </div>
-    
+
 </body>
 
 </html>
+<!-- document.getElementById('vastForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const vastVideoUrl = document.getElementById('vastVideoUrl').value;
+    const vastAudioUrl = document.getElementById('vastAudioUrl').value;
+    new VisualAudioPlayer(vastVideoUrl ,vastAudioUrl, true);
+}) -->
