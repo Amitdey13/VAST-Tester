@@ -165,4 +165,4 @@ function parseXmlOrReturnUrl(inputString) {
 
 const warn = (message, data) => console.warn({ message, data });
 
-export { xmlToJSON, warn };
+export { xmlToJSON, warn, parseXmlOrReturnUrl };

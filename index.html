@@ -18,6 +18,9 @@
             list-style-type: none;
             padding: 0;
             margin-left: 30px;
+            max-height: 653px;
+            overflow-y: auto;
+            margin-top: -350px;
         }
 
         li {
@@ -43,12 +46,23 @@
             width: 100%;
             margin-bottom: 10px;
         }
+
         #vastForm label {
             display: block;
-            margin-bottom: 8px;
             font-weight: bold;
             color: #333;
         }
+
+        #vastForm textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
         #vastForm input[type="text"] {
             width: calc(100% - 20px);
             padding: 10px;
@@ -57,6 +71,21 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+
+        #vastForm input[type="number"] {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="radio"],
+        #vastForm input[type="checkbox"] {
+            cursor: pointer;
+        }
+
         #vastForm button {
             display: block;
             width: 100%;
@@ -69,6 +98,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         #vastForm button:hover {
             background-color: #0056b3;
         }
@@ -77,10 +107,33 @@
 
 <body>
     <form id="vastForm">
-        <label for="vastUrl">VAST URL:</label>
-        <input type="text" id="vastVideoUrl" placeholder="video vast" name="vastUrl" required>
-        <input type="text" id="vastAudioUrl" placeholder="audio vast" name="vastUrl" required>
-        <div style="display: flex;">
+        <p>Select your player option:</p>
+        <div style="display: flex; margin-bottom: 20px;">
+            <span style="margin-right: 20px; display: flex;">
+                <input type="radio" id="vast_tag" name="vast_option" value="2" checked>
+                <label for="apple">Vast Tag</label>
+            </span>
+            <span style=" display: flex;">
+                <input type="radio" id="vast_url" name="vast_option" value="1">
+                <label for="banana">Seperate Vast URL</label>
+            </span>
+        </div>
+        <p id="details_1" style="display: none;">
+            <label for="vastUrl" style="margin-bottom: 10px;">Vast url:</label>
+            <input type="text" id="vastVideoUrl" placeholder="video vast" name="vastUrl">
+            <input type="text" id="vastAudioUrl" placeholder="audio vast" name="vastUrl">
+        </p>
+        <p id="details_2">
+            <label for="vastUrl" style="margin-bottom: 10px;">Details:</label>
+            <textarea type="text" id="vastString" placeholder="vast xml" name="vastXmlString" rows="10"></textarea>
+            <input type="text" id="htmlTag" placeholder="div id" name="htmlTagId">
+            <span style=" display: flex; gap: 20px;">
+                <input type="number" id="videoHeight" placeholder="height" name="videoHeight">
+                <input type="number" id="videoWidth" placeholder="width" name="videoWidth">
+            </span>
+        </p>
+
+        <div style="display: flex; margin-bottom: 10px;">
             <label style="margin-right: 10px;" for="vastUrl">Log enable:</label>
             <input type="checkbox" id="vastLog" checked />
         </div>
@@ -88,19 +141,40 @@
     </form>
     <div id="visual_audio_slot">
         <div id="visual_audio_player"></div>
-        <script src="dist/bundle.js"></script>
+        <script src="dist/visualAudioPlayer.js"></script>
         <script defer>
-            document.getElementById('vastForm').addEventListener('submit', function(event) {
+            const vastOptions = document.getElementsByName('vast_option');
+            let selectedOption = 2;
+            vastOptions.forEach(node => node.addEventListener('change', (e) => {
+                if (e.target.value == 1 && e.target.checked) {
+                    document.getElementById('details_2').style.display = 'none';
+                    document.getElementById('details_1').style.display = 'block';
+                    selectedOption = 1;
+                } else {
+                    document.getElementById('details_2').style.display = 'block';
+                    document.getElementById('details_1').style.display = 'none';
+                    selectedOption = 2;
+                }
+            }));
+            document.getElementById('vastForm').addEventListener('submit', function (event) {
                 event.preventDefault();
-                const vastVideoUrl = document.getElementById('vastVideoUrl').value;
-                const vastAudioUrl = document.getElementById('vastAudioUrl').value;
-                const vastLog = document.getElementById('vastLog').checked;
-                new VisualAudioPlayer(vastVideoUrl ,vastAudioUrl, vastLog);
-                // new VisualAudioPlayer("https://visual-audio.s3.amazonaws.com/video-vast/Sample_Video_VAST.xml", "https://visual-audio.s3.amazonaws.com/audio-vast/Sample_Audio_VAST.xml", true);
+                if (selectedOption === 1) {
+                    const vastVideoUrl = document.getElementById('vastVideoUrl').value;
+                    const vastAudioUrl = document.getElementById('vastAudioUrl').value;
+                    const vastLog = document.getElementById('vastLog').checked;
+                    new VisualAudioPlayer(vastVideoUrl, vastAudioUrl, vastLog);
+                } else {
+                    const vastString = document.getElementById('vastString').value;
+                    const divId = document.getElementById('htmlTag').value;
+                    const height = document.getElementById('videoHeight').value;
+                    const width = document.getElementById('videoWidth').value;
+                    const vastLog = document.getElementById('vastLog').checked;
+                    new VisualAudioVastPlayer(vastString, divId, height, width, vastLog);
+                }
             })
         </script>
     </div>
-
+<script src="dist/visualAudioVastPlayer.js"></script>
 </body>
 
 </html>

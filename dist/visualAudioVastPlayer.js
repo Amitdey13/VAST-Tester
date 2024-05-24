@@ -10,6 +10,7 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   parseXmlOrReturnUrl: () => (/* binding */ parseXmlOrReturnUrl),
 /* harmony export */   warn: () => (/* binding */ warn),
 /* harmony export */   xmlToJSON: () => (/* binding */ xmlToJSON)
 /* harmony export */ });
@@ -6419,9 +6420,9 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!**********************************!*\
-  !*** ./src/visualAudioPlayer.js ***!
-  \**********************************/
+/*!**************************************!*\
+  !*** ./src/visualAudioVastPlayer.js ***!
+  \**************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var iab_vast_loader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! iab-vast-loader */ "./node_modules/iab-vast-loader/browser.js");
 /* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
@@ -6429,12 +6430,6 @@ function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == 
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _iterableToArrayLimit(r, l) { var t = null == r ? null : "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (null != t) { var e, n, i, u, a = [], f = !0, o = !1; try { if (i = (t = t.call(r)).next, 0 === l) { if (Object(t) !== t) return; f = !1; } else for (; !(f = (e = i.call(t)).done) && (a.push(e.value), a.length !== l); f = !0); } catch (r) { o = !0, n = r; } finally { try { if (!f && null != t["return"] && (u = t["return"](), Object(u) !== u)) return; } finally { if (o) throw n; } } return a; } }
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return e; }; var t, e = {}, r = Object.prototype, n = r.hasOwnProperty, o = Object.defineProperty || function (t, e, r) { t[e] = r.value; }, i = "function" == typeof Symbol ? Symbol : {}, a = i.iterator || "@@iterator", c = i.asyncIterator || "@@asyncIterator", u = i.toStringTag || "@@toStringTag"; function define(t, e, r) { return Object.defineProperty(t, e, { value: r, enumerable: !0, configurable: !0, writable: !0 }), t[e]; } try { define({}, ""); } catch (t) { define = function define(t, e, r) { return t[e] = r; }; } function wrap(t, e, r, n) { var i = e && e.prototype instanceof Generator ? e : Generator, a = Object.create(i.prototype), c = new Context(n || []); return o(a, "_invoke", { value: makeInvokeMethod(t, r, c) }), a; } function tryCatch(t, e, r) { try { return { type: "normal", arg: t.call(e, r) }; } catch (t) { return { type: "throw", arg: t }; } } e.wrap = wrap; var h = "suspendedStart", l = "suspendedYield", f = "executing", s = "completed", y = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var p = {}; define(p, a, function () { return this; }); var d = Object.getPrototypeOf, v = d && d(d(values([]))); v && v !== r && n.call(v, a) && (p = v); var g = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(p); function defineIteratorMethods(t) { ["next", "throw", "return"].forEach(function (e) { define(t, e, function (t) { return this._invoke(e, t); }); }); } function AsyncIterator(t, e) { function invoke(r, o, i, a) { var c = tryCatch(t[r], t, o); if ("throw" !== c.type) { var u = c.arg, h = u.value; return h && "object" == _typeof(h) && n.call(h, "__await") ? e.resolve(h.__await).then(function (t) { invoke("next", t, i, a); }, function (t) { invoke("throw", t, i, a); }) : e.resolve(h).then(function (t) { u.value = t, i(u); }, function (t) { return invoke("throw", t, i, a); }); } a(c.arg); } var r; o(this, "_invoke", { value: function value(t, n) { function callInvokeWithMethodAndArg() { return new e(function (e, r) { invoke(t, n, e, r); }); } return r = r ? r.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(e, r, n) { var o = h; return function (i, a) { if (o === f) throw Error("Generator is already running"); if (o === s) { if ("throw" === i) throw a; return { value: t, done: !0 }; } for (n.method = i, n.arg = a;;) { var c = n.delegate; if (c) { var u = maybeInvokeDelegate(c, n); if (u) { if (u === y) continue; return u; } } if ("next" === n.method) n.sent = n._sent = n.arg;else if ("throw" === n.method) { if (o === h) throw o = s, n.arg; n.dispatchException(n.arg); } else "return" === n.method && n.abrupt("return", n.arg); o = f; var p = tryCatch(e, r, n); if ("normal" === p.type) { if (o = n.done ? s : l, p.arg === y) continue; return { value: p.arg, done: n.done }; } "throw" === p.type && (o = s, n.method = "throw", n.arg = p.arg); } }; } function maybeInvokeDelegate(e, r) { var n = r.method, o = e.iterator[n]; if (o === t) return r.delegate = null, "throw" === n && e.iterator["return"] && (r.method = "return", r.arg = t, maybeInvokeDelegate(e, r), "throw" === r.method) || "return" !== n && (r.method = "throw", r.arg = new TypeError("The iterator does not provide a '" + n + "' method")), y; var i = tryCatch(o, e.iterator, r.arg); if ("throw" === i.type) return r.method = "throw", r.arg = i.arg, r.delegate = null, y; var a = i.arg; return a ? a.done ? (r[e.resultName] = a.value, r.next = e.nextLoc, "return" !== r.method && (r.method = "next", r.arg = t), r.delegate = null, y) : a : (r.method = "throw", r.arg = new TypeError("iterator result is not an object"), r.delegate = null, y); } function pushTryEntry(t) { var e = { tryLoc: t[0] }; 1 in t && (e.catchLoc = t[1]), 2 in t && (e.finallyLoc = t[2], e.afterLoc = t[3]), this.tryEntries.push(e); } function resetTryEntry(t) { var e = t.completion || {}; e.type = "normal", delete e.arg, t.completion = e; } function Context(t) { this.tryEntries = [{ tryLoc: "root" }], t.forEach(pushTryEntry, this), this.reset(!0); } function values(e) { if (e || "" === e) { var r = e[a]; if (r) return r.call(e); if ("function" == typeof e.next) return e; if (!isNaN(e.length)) { var o = -1, i = function next() { for (; ++o < e.length;) if (n.call(e, o)) return next.value = e[o], next.done = !1, next; return next.value = t, next.done = !0, next; }; return i.next = i; } } throw new TypeError(_typeof(e) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, o(g, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), o(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, u, "GeneratorFunction"), e.isGeneratorFunction = function (t) { var e = "function" == typeof t && t.constructor; return !!e && (e === GeneratorFunction || "GeneratorFunction" === (e.displayName || e.name)); }, e.mark = function (t) { return Object.setPrototypeOf ? Object.setPrototypeOf(t, GeneratorFunctionPrototype) : (t.__proto__ = GeneratorFunctionPrototype, define(t, u, "GeneratorFunction")), t.prototype = Object.create(g), t; }, e.awrap = function (t) { return { __await: t }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, c, function () { return this; }), e.AsyncIterator = AsyncIterator, e.async = function (t, r, n, o, i) { void 0 === i && (i = Promise); var a = new AsyncIterator(wrap(t, r, n, o), i); return e.isGeneratorFunction(r) ? a : a.next().then(function (t) { return t.done ? t.value : a.next(); }); }, defineIteratorMethods(g), define(g, u, "Generator"), define(g, a, function () { return this; }), define(g, "toString", function () { return "[object Generator]"; }), e.keys = function (t) { var e = Object(t), r = []; for (var n in e) r.push(n); return r.reverse(), function next() { for (; r.length;) { var t = r.pop(); if (t in e) return next.value = t, next.done = !1, next; } return next.done = !0, next; }; }, e.values = values, Context.prototype = { constructor: Context, reset: function reset(e) { if (this.prev = 0, this.next = 0, this.sent = this._sent = t, this.done = !1, this.delegate = null, this.method = "next", this.arg = t, this.tryEntries.forEach(resetTryEntry), !e) for (var r in this) "t" === r.charAt(0) && n.call(this, r) && !isNaN(+r.slice(1)) && (this[r] = t); }, stop: function stop() { this.done = !0; var t = this.tryEntries[0].completion; if ("throw" === t.type) throw t.arg; return this.rval; }, dispatchException: function dispatchException(e) { if (this.done) throw e; var r = this; function handle(n, o) { return a.type = "throw", a.arg = e, r.next = n, o && (r.method = "next", r.arg = t), !!o; } for (var o = this.tryEntries.length - 1; o >= 0; --o) { var i = this.tryEntries[o], a = i.completion; if ("root" === i.tryLoc) return handle("end"); if (i.tryLoc <= this.prev) { var c = n.call(i, "catchLoc"), u = n.call(i, "finallyLoc"); if (c && u) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } else if (c) { if (this.prev < i.catchLoc) return handle(i.catchLoc, !0); } else { if (!u) throw Error("try statement without catch or finally"); if (this.prev < i.finallyLoc) return handle(i.finallyLoc); } } } }, abrupt: function abrupt(t, e) { for (var r = this.tryEntries.length - 1; r >= 0; --r) { var o = this.tryEntries[r]; if (o.tryLoc <= this.prev && n.call(o, "finallyLoc") && this.prev < o.finallyLoc) { var i = o; break; } } i && ("break" === t || "continue" === t) && i.tryLoc <= e && e <= i.finallyLoc && (i = null); var a = i ? i.completion : {}; return a.type = t, a.arg = e, i ? (this.method = "next", this.next = i.finallyLoc, y) : this.complete(a); }, complete: function complete(t, e) { if ("throw" === t.type) throw t.arg; return "break" === t.type || "continue" === t.type ? this.next = t.arg : "return" === t.type ? (this.rval = this.arg = t.arg, this.method = "return", this.next = "end") : "normal" === t.type && e && (this.next = e), y; }, finish: function finish(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.finallyLoc === t) return this.complete(r.completion, r.afterLoc), resetTryEntry(r), y; } }, "catch": function _catch(t) { for (var e = this.tryEntries.length - 1; e >= 0; --e) { var r = this.tryEntries[e]; if (r.tryLoc === t) { var n = r.completion; if ("throw" === n.type) { var o = n.arg; resetTryEntry(r); } return o; } } throw Error("illegal catch attempt"); }, delegateYield: function delegateYield(e, r, n) { return this.delegate = { iterator: values(e), resultName: r, nextLoc: n }, "next" === this.method && (this.arg = t), y; } }, e; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -6450,15 +6445,16 @@ var pauseSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="15" v
 var muteSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="27" viewBox="0 0 576 512"><path fill="#ffffff" d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM425 167l55 55 55-55c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-55 55 55 55c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0l-55-55-55 55c-9.4 9.4-24.6 9.4-33.9 0s-9.4-24.6 0-33.9l55-55-55-55c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0z"/></svg>';
 var unmuteSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="21" viewBox="0 0 448 512"><path fill="#ffffff" d="M301.1 34.8C312.6 40 320 51.4 320 64V448c0 12.6-7.4 24-18.9 29.2s-25 3.1-34.4-5.3L131.8 352H64c-35.3 0-64-28.7-64-64V224c0-35.3 28.7-64 64-64h67.8L266.7 40.1c9.4-8.4 22.9-10.4 34.4-5.3zM412.6 181.5C434.1 199.1 448 225.9 448 256s-13.9 56.9-35.4 74.5c-10.3 8.4-25.4 6.8-33.8-3.5s-6.8-25.4 3.5-33.8C393.1 284.4 400 271 400 256s-6.9-28.4-17.7-37.3c-10.3-8.4-11.8-23.5-3.5-33.8s23.5-11.8 33.8-3.5z"/></svg>';
 var replaySvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512"><path fill="#ffffff" d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96H320v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32V64H160C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192V352c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448H352c88.4 0 160-71.6 160-160z"/></svg>';
-var VisualAudioPlayer = /*#__PURE__*/function () {
-  function VisualAudioPlayer(videoVast, audioVast) {
-    var log = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-    _classCallCheck(this, VisualAudioPlayer);
-    this.videoVast = videoVast;
-    this.audioVast = audioVast;
+var VisualAudioVastPlayer = /*#__PURE__*/function () {
+  function VisualAudioVastPlayer(vastString, addSlot, height, width) {
+    var log = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    _classCallCheck(this, VisualAudioVastPlayer);
+    this.vastUrl = "data:text/xml;base64,".concat(btoa(vastString));
     this.logger = log;
-    this.videoParsedXmlData = null;
-    this.audioParsedXmlData = null;
+    this.addSlot = addSlot;
+    this.videoHeight = height;
+    this.videoWidth = width;
+    this.parsedXmlData = null;
     this.audioInlineVastData = null;
     this.audioEvents = null;
     this.videoSrc = null;
@@ -6472,24 +6468,25 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
     };
     this.initializePlayers();
   }
-  return _createClass(VisualAudioPlayer, [{
+  return _createClass(VisualAudioVastPlayer, [{
     key: "initializePlayers",
     value: function () {
       var _initializePlayers = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              _context.next = 2;
+              _context.prev = 0;
+              _context.next = 3;
               return this.loadVastData();
-            case 2:
+            case 3:
               console.log({
-                videoParsedXmlData: this.videoParsedXmlData,
-                audioParsedXmlData: this.audioParsedXmlData,
+                parsedXmlData: this.parsedXmlData,
                 audioInlineVastData: this.audioInlineVastData,
                 audioEvents: this.audioEvents,
                 videoSrc: this.videoSrc,
                 audioSrc: this.audioSrc
               });
+              this.validateParameters();
               this.createVideoPlayer();
               this.createAudioPlayer();
               this.createPlayerControls();
@@ -6499,11 +6496,17 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
               }
               this.addEventListeners();
               this.addControlEvents();
-            case 10:
+              _context.next = 17;
+              break;
+            case 14:
+              _context.prev = 14;
+              _context.t0 = _context["catch"](0);
+              console.error(_context.t0);
+            case 17:
             case "end":
               return _context.stop();
           }
-        }, _callee, this);
+        }, _callee, this, [[0, 14]]);
       }));
       function initializePlayers() {
         return _initializePlayers.apply(this, arguments);
@@ -6514,30 +6517,34 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
     key: "loadVastData",
     value: function () {
       var _loadVastData = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var _xmlToJSON;
-        var _yield$Promise$all, _yield$Promise$all2, _tmpAudioInlineVast, _tmpAudioLinearVast;
+        var _xmlToJSON, _vastType, _tmpAudioInlineVast, _tmpAudioLinearVast;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              _context2.next = 2;
-              return Promise.all([this.fetchVastData(this.videoVast), this.fetchVastData(this.audioVast)]);
-            case 2:
-              _yield$Promise$all = _context2.sent;
-              _yield$Promise$all2 = _slicedToArray(_yield$Promise$all, 2);
-              this.videoParsedXmlData = _yield$Promise$all2[0];
-              this.audioParsedXmlData = _yield$Promise$all2[1];
-              console.log(this.videoParsedXmlData, this.audioParsedXmlData);
-              _tmpAudioInlineVast = this.getAdFromVast('InLine', _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.audioParsedXmlData[this.audioParsedXmlData.length - 1]);
+              _context2.prev = 0;
+              _context2.next = 3;
+              return this.fetchVastData(this.vastUrl);
+            case 3:
+              this.parsedXmlData = _context2.sent;
+              _vastType = this.checkVastType();
+              _tmpAudioInlineVast = this.getAdFromVast('InLine', _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.parsedXmlData[this.parsedXmlData.length - 1]);
+              console.log(this.parsedXmlData, _tmpAudioInlineVast);
               this.audioInlineVastData = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(_tmpAudioInlineVast);
               _tmpAudioLinearVast = this.getLinearFromInLine(_tmpAudioInlineVast, _utils__WEBPACK_IMPORTED_MODULE_1__.warn);
               this.audioEvents = this.getTrackingEvents(_tmpAudioLinearVast);
-              this.videoSrc = this.getMediaFileUrl((0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(this.getLinearFromInLine(this.getAdFromVast('InLine', _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.videoParsedXmlData[this.videoParsedXmlData.length - 1]), _utils__WEBPACK_IMPORTED_MODULE_1__.warn)).mediaFiles);
+              this.videoSrc = this.getMediaFileUrl((0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(this.getVideoLinearFromInLine(this.getAdFromVast(_vastType, _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.parsedXmlData[0]), _utils__WEBPACK_IMPORTED_MODULE_1__.warn)).mediaFiles);
               this.audioSrc = this.getMediaFileUrl((_xmlToJSON = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(_tmpAudioLinearVast)) === null || _xmlToJSON === void 0 ? void 0 : _xmlToJSON.mediaFiles);
-            case 13:
+              _context2.next = 17;
+              break;
+            case 14:
+              _context2.prev = 14;
+              _context2.t0 = _context2["catch"](0);
+              console.error(_context2.t0);
+            case 17:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, this);
+        }, _callee2, this, [[0, 14]]);
       }));
       function loadVastData() {
         return _loadVastData.apply(this, arguments);
@@ -6552,19 +6559,23 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
-              _context3.next = 2;
+              _context3.prev = 0;
+              _context3.next = 3;
               return new iab_vast_loader__WEBPACK_IMPORTED_MODULE_0__.VASTLoader(vastUrl, {
                 noSingleAdPods: true
               }).load();
-            case 2:
+            case 3:
               response = _context3.sent;
-              ;
               return _context3.abrupt("return", response);
-            case 5:
+            case 7:
+              _context3.prev = 7;
+              _context3.t0 = _context3["catch"](0);
+              console.error(_context3.t0);
+            case 10:
             case "end":
               return _context3.stop();
           }
-        }, _callee3);
+        }, _callee3, null, [[0, 7]]);
       }));
       function fetchVastData(_x) {
         return _fetchVastData.apply(this, arguments);
@@ -6572,9 +6583,19 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       return fetchVastData;
     }()
   }, {
+    key: "checkVastType",
+    value: function checkVastType() {
+      var _xmlToJSON2;
+      var _ads = (_xmlToJSON2 = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(this.parsedXmlData[0])) === null || _xmlToJSON2 === void 0 ? void 0 : _xmlToJSON2.ads;
+      console.log(_ads);
+      if (!(_ads !== null && _ads !== void 0 && _ads.length)) {
+        throw new Error('No Ad element found in VAST XML');
+      }
+      return _ads[0].$type;
+    }
+  }, {
     key: "getAdFromVast",
     value: function getAdFromVast(type, warn, vast) {
-      console.log(vast);
       if (vast.version >= '4.0') {
         warn('Support for VAST 4 is incomplete', vast.uri);
       }
@@ -6604,6 +6625,17 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       return linearCreatives[0].linear;
     }
   }, {
+    key: "getVideoLinearFromInLine",
+    value: function getVideoLinearFromInLine(inLine, warn) {
+      var linearCreatives = inLine.creatives.toArray().filter(function (creative) {
+        return creative.linear != null;
+      });
+      if (linearCreatives.length > 1) {
+        warn('Multiple Linear elements in InLine, using first', inLine.uri);
+      }
+      return linearCreatives[linearCreatives.length - 1].linear;
+    }
+  }, {
     key: "getMediaFileUrl",
     value: function getMediaFileUrl(mediaFiles) {
       return mediaFiles[0];
@@ -6631,12 +6663,31 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       }, {});
     }
   }, {
+    key: "validateParameters",
+    value: function validateParameters() {
+      var requiredParams = {
+        videoSrc: this.videoSrc,
+        audioSrc: this.audioSrc,
+        addSlotTagId: this.addSlot,
+        height: this.videoHeight,
+        width: this.videoWidth
+      };
+      var notSpecified = Object.keys(requiredParams).filter(function (key) {
+        return !requiredParams[key];
+      });
+      if (notSpecified.length) {
+        throw new Error("Parameters missing ".concat(notSpecified.join(', ')));
+      }
+    }
+  }, {
     key: "createVideoPlayer",
     value: function createVideoPlayer() {
       this.videoPlayer = document.createElement('video');
       this.videoPlayer.src = this.videoSrc.uri;
       this.videoPlayer.controls = false;
       this.videoPlayer.muted = true;
+      this.videoPlayer.height = this.videoHeight;
+      this.videoPlayer.width = this.videoWidth;
     }
   }, {
     key: "createAudioPlayer",
@@ -6667,7 +6718,7 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.controlsContainer.style.justifyContent = 'space-between';
       this.controlsContainer.style.position = 'absolute';
       this.controlsContainer.style.paddingInline = '5%';
-      this.controlsContainer.style.bottom = '10%';
+      this.controlsContainer.style.bottom = '30px';
     }
   }, {
     key: "createButton",
@@ -6683,11 +6734,14 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
   }, {
     key: "wrapPlayers",
     value: function wrapPlayers() {
-      this.wrapperDiv = document.getElementById('visual_audio_player');
+      this.addSlotCont = document.getElementById(this.addSlot);
+      this.wrapperDiv = document.createElement('div');
+      this.wrapperDiv.id = 'visual_audio_vast_player';
       this.wrapperDiv.style.position = 'relative';
       this.wrapperDiv.appendChild(this.videoPlayer);
       this.wrapperDiv.appendChild(this.audioPlayer);
       this.wrapperDiv.appendChild(this.controlsContainer);
+      this.addSlotCont.appendChild(this.wrapperDiv);
     }
   }, {
     key: "createLoggerElement",
@@ -6851,9 +6905,9 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
     }
   }]);
 }();
-window.VisualAudioPlayer = VisualAudioPlayer;
+window.VisualAudioVastPlayer = VisualAudioVastPlayer;
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=bundle.js.map
+//# sourceMappingURL=visualAudioVastPlayer.js.map

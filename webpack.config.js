@@ -1,9 +1,12 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/visualAudioPlayer.js',
+    entry: {
+        visualAudioPlayer: './src/visualAudioPlayer.js',
+        visualAudioVastPlayer: './src/visualAudioVastPlayer.js'
+    },
     output: {
-        filename: 'bundle.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, 'dist'),
     },
     mode: 'development',
