@@ -107,8 +107,8 @@
 
 <body>
     <form id="vastForm">
-        <p>Select your player option:</p>
-        <div style="display: flex; margin-bottom: 20px;">
+        <div style="display: none; margin-bottom: 20px;">
+            <p>Select your player option:</p>
             <span style="margin-right: 20px; display: flex;">
                 <input type="radio" id="vast_tag" name="vast_option" value="2" checked>
                 <label for="apple">Vast Tag</label>
@@ -124,7 +124,7 @@
             <input type="text" id="vastAudioUrl" placeholder="audio vast" name="vastUrl">
         </p>
         <p id="details_2">
-            <label for="vastUrl" style="margin-bottom: 10px;">Details:</label>
+            <label for="vastUrl" style="margin-bottom: 10px;">Audio vast:</label>
             <textarea type="text" id="vastString" placeholder="vast xml" name="vastXmlString" rows="10"></textarea>
             <input type="text" id="htmlTag" placeholder="div id" name="htmlTagId">
             <span style=" display: flex; gap: 20px;">
@@ -164,14 +164,43 @@
                     const vastLog = document.getElementById('vastLog').checked;
                     new VisualAudioPlayer(vastVideoUrl, vastAudioUrl, vastLog);
                 } else {
-                    const vastString = document.getElementById('vastString').value;
-                    const divId = document.getElementById('htmlTag').value;
-                    const height = document.getElementById('videoHeight').value;
-                    const width = document.getElementById('videoWidth').value;
-                    const vastLog = document.getElementById('vastLog').checked;
-                    new VisualAudioVastPlayer(vastString, divId, height, width, vastLog);
+                    // const divId = document.getElementById('htmlTag').value;
+                    // const height = document.getElementById('videoHeight').value;
+                    // const width = document.getElementById('videoWidth').value;
+                    // const vastLog = document.getElementById('vastLog').checked;
+                    // new VisualAudioVastPlayer(vastString, divId, height, width, vastLog);
+                    getAndRunCustomVast();
                 }
             })
+            
+            async function getAndRunCustomVast() {
+                const vastString = document.getElementById('vastString').value;
+                const payload = {
+                        ad_id: 1234,
+                        audio_vast_xml: `${vastString}`
+                    }
+                console.log(vastString);
+                let customVast = null;
+                await fetch('https://visual-audio-engine.digitalavenues.net/api/get-custom-vast', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload),
+                    mode: "cors"
+                })
+                .then(response => response.json())
+                .then(data => { 
+                    console.log(data) 
+                    customVast = data.vast
+                })
+                .catch(error => console.error('Error:', error));
+                const divId = document.getElementById('htmlTag').value;
+                const height = document.getElementById('videoHeight').value;
+                const width = document.getElementById('videoWidth').value;
+                const vastLog = document.getElementById('vastLog').checked;
+                new VisualAudioVastPlayer(customVast, divId, height, width, vastLog);
+            }
         </script>
     </div>
 <script src="dist/visualAudioVastPlayer.js"></script>
