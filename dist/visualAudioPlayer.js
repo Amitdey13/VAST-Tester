@@ -6735,7 +6735,8 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
   }, {
     key: "addEventListeners",
     value: function addEventListeners() {
-      var _this2 = this;
+      var _this2 = this,
+        _this$audioEvents$imp;
       this.videoPlayer.addEventListener('play', function () {
         return _this2.visualAudioSyncPlay();
       });
@@ -6745,7 +6746,6 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
       this.videoPlayer.addEventListener('volumechange', function () {
         return _this2.visualAudioSyncVolume();
       });
-      this.triggerEvent('impression');
       this.audioPlayer.addEventListener('play', function () {
         if (!_this2.audioPaused) {
           _this2.triggerEvent('start');
@@ -6790,6 +6790,9 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
         }
       });
       // this.videoPlayer.addEventListener('click', () => this.triggerClickThrough());
+      (_this$audioEvents$imp = this.audioEvents.impressions) === null || _this$audioEvents$imp === void 0 || _this$audioEvents$imp.forEach(function (_, index) {
+        _this2.triggerEvent('impression', index);
+      });
     }
   }, {
     key: "visualAudioSyncPlay",
@@ -6817,17 +6820,18 @@ var VisualAudioPlayer = /*#__PURE__*/function () {
   }, {
     key: "triggerEvent",
     value: function triggerEvent(eventType) {
-      var _this$audioEvents, _this$audioEvents2;
+      var _this$audioEvents;
+      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
       var uri = null;
-      if ((_this$audioEvents = this.audioEvents) !== null && _this$audioEvents !== void 0 && (_this$audioEvents = _this$audioEvents.trackingEvents[eventType]) !== null && _this$audioEvents !== void 0 && _this$audioEvents.length) {
-        uri = this.audioEvents.trackingEvents[eventType][0].uri;
-        fetch(this.audioEvents.trackingEvents[eventType][0].uri, {
+      if (eventType === 'impression') {
+        uri = this.audioEvents.impressions[index].uri;
+        fetch(this.audioEvents.impressions[index].uri, {
           method: 'GET',
           mode: "no-cors"
         });
-      } else if (eventType === 'impression' && (_this$audioEvents2 = this.audioEvents) !== null && _this$audioEvents2 !== void 0 && (_this$audioEvents2 = _this$audioEvents2.impressions) !== null && _this$audioEvents2 !== void 0 && _this$audioEvents2.length) {
-        uri = this.audioEvents.impressions[0].uri;
-        fetch(this.audioEvents.impressions[0].uri, {
+      } else if ((_this$audioEvents = this.audioEvents) !== null && _this$audioEvents !== void 0 && (_this$audioEvents = _this$audioEvents.trackingEvents[eventType]) !== null && _this$audioEvents !== void 0 && _this$audioEvents.length) {
+        uri = this.audioEvents.trackingEvents[eventType][0].uri;
+        fetch(this.audioEvents.trackingEvents[eventType][0].uri, {
           method: 'GET',
           mode: "no-cors"
         });

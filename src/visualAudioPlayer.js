@@ -215,7 +215,6 @@ class VisualAudioPlayer {
         this.videoPlayer.addEventListener('pause', () => this.visualAudioSyncPause());
         this.videoPlayer.addEventListener('volumechange', () => this.visualAudioSyncVolume());
         
-        this.triggerEvent('impression');
         this.audioPlayer.addEventListener('play', () => {
             if (!this.audioPaused) {
                 this.triggerEvent('start');
@@ -261,6 +260,9 @@ class VisualAudioPlayer {
             }
         });
         // this.videoPlayer.addEventListener('click', () => this.triggerClickThrough());
+        this.audioEvents.impressions?.forEach((_, index) => {
+            this.triggerEvent('impression', index);
+        });
     }
 
     visualAudioSyncPlay() {
@@ -283,14 +285,14 @@ class VisualAudioPlayer {
         this.audioPlayer.volume = this.videoPlayer.volume;
     }
 
-    triggerEvent(eventType) {
+    triggerEvent(eventType, index = 0) {
         let uri = null;
-        if (this.audioEvents?.trackingEvents[eventType]?.length) {
+        if (eventType === 'impression') {
+            uri = this.audioEvents.impressions[index].uri;
+            fetch(this.audioEvents.impressions[index].uri, { method: 'GET', mode: "no-cors" });
+        } else if (this.audioEvents?.trackingEvents[eventType]?.length) {
             uri = this.audioEvents.trackingEvents[eventType][0].uri;
             fetch(this.audioEvents.trackingEvents[eventType][0].uri, { method: 'GET', mode: "no-cors" });
-        } else if (eventType === 'impression' && this.audioEvents?.impressions?.length) {
-            uri = this.audioEvents.impressions[0].uri;
-            fetch(this.audioEvents.impressions[0].uri, { method: 'GET', mode: "no-cors" });
         }
         if (this.logger) {
             const log = document.createElement('li');
