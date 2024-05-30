@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAST Loader Example</title>
+    <style>
+
+        .cont_1 {
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: #ccc;
+            display: flex;
+        }
+        .cont_2 {
+            padding: 10px;
+            margin-top: 10px;
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: #ccc;
+            display: flex;
+            width: calc(100% - 20px);
+            min-height: 400px;
+        }
+        
+        .cont_1 .details {
+            width: 100%;
+            padding: 15px
+        }
+
+        .cont_1 #custom_vast {
+            margin-top: 15px;
+            background-color: #eee;
+            height: 300px;
+            width: calc(100% - 30px);
+            border-radius: 10px;
+            padding: 10px 15px;
+            overflow: scroll;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-left: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        #visual_audio_slot {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        #vastForm {
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #vastForm p {
+            margin: 0;
+        }
+
+        #vastForm label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #vastForm textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        #vastForm input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="number"] {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="radio"],
+        #vastForm input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        #vastForm button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #vastForm button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cont_1">
+        <form id="vastForm">
+            <p id="details_2">
+                <input type="text" id="audio_vast_url" placeholder="audio vast url">
+                <input type="text" id="video_url" placeholder="video url">
+                <span style=" display: flex; gap: 20px;">
+                    <input type="number" value="300" id="videoHeight" placeholder="height" name="videoHeight">
+                    <input type="number" value="500" id="videoWidth" placeholder="width" name="videoWidth">
+                </span>
+            </p>
+
+            <div style="display: flex; margin-bottom: 10px;">
+                <label style="margin-right: 10px;" for="vastUrl">Log enable:</label>
+                <input type="checkbox" id="vastLog" checked />
+            </div>
+            <button type="submit">Play custom vast</button>
+        </form>
+        <div class="details">
+            <span><strong>Ad Slot Tag:</strong> visual_audio_slot</span>
+            <div id="custom_vast">Custom vast</div>
+        </div>
+    </div>
+    <div class="cont_2">
+        <div id="visual_audio_slot">
+            <div id="visual_audio_player" aria-placeholder="advertisement"> </div>
+            <script src="dist/visualAudioPlayer.js"></script>
+            <script defer>
+                const vastOptions = document.getElementsByName('vast_option');
+                let selectedOption = 2;
+                vastOptions.forEach(node => node.addEventListener('change', (e) => {
+                    if (e.target.value == 1 && e.target.checked) {
+                        document.getElementById('details_2').style.display = 'none';
+                        document.getElementById('details_1').style.display = 'block';
+                        selectedOption = 1;
+                    } else {
+                        document.getElementById('details_2').style.display = 'block';
+                        document.getElementById('details_1').style.display = 'none';
+                        selectedOption = 2;
+                    }
+                }));
+                document.getElementById('vastForm').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    getAndRunCustomVast();
+                })
+    
+                async function getAndRunCustomVast() {
+                    const audio_vast_url = document.getElementById('audio_vast_url').value;
+                    const video_url = document.getElementById('video_url').value;
+                    const queryParams = { audio_vast_url, video_url }
+                    const queryString = new URLSearchParams(queryParams).toString();
+                    let customVast = null;
+                    document.getElementById('custom_vast').innerText = "Generating custom vast...";
+                    await fetch(`https://visual-audio-engine.digitalavenues.net/api/get-custom-vast-url?${queryString}`, {
+                        method: 'get',
+                        mode: "cors"
+                    })
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(data);
+                            customVast = data;
+                            document.getElementById('custom_vast').innerText = data;
+                        })
+                        .catch(error => console.error('Error:', error));
+                    const divId = "visual_audio_slot";
+                    const height = document.getElementById('videoHeight').value;
+                    const width = document.getElementById('videoWidth').value;
+                    const vastLog = document.getElementById('vastLog').checked;
+                    new VisualAudioVastPlayer(customVast, divId, height, width, vastLog);
+                }
+            </script>
+        </div>
+    </div>
+    <script src="dist/visualAudioVastPlayer.js"></script>
+</body>
+
+</html>
