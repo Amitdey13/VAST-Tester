@@ -229,7 +229,8 @@ class VisualAudioVastPlayer {
     }
 
     addControlEvents() {
-        this.videoBtn.addEventListener('click', () => {
+        this.videoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (this.videoPlayer.paused) {
                 this.videoPlayer.play();
                 this.videoBtn.innerHTML = pauseSvg;
@@ -239,7 +240,8 @@ class VisualAudioVastPlayer {
             }
         });
 
-        this.soundBtn.addEventListener('click', () => {
+        this.soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (this.audioPlayer.muted) {
                 this.audioPlayer.muted = false;
                 this.soundBtn.innerHTML = unmuteSvg;
@@ -249,7 +251,8 @@ class VisualAudioVastPlayer {
             }
         });
 
-        this.replayBtn.addEventListener('click', () => {
+        this.replayBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
             if (this.audioPlayer.currentTime > 0) {
                 this.audioPlayer.currentTime = 0;
                 this.videoPlayer.currentTime = 0;
@@ -314,6 +317,9 @@ class VisualAudioVastPlayer {
         });
 
         this.videoPlayer.addEventListener('click', () => {
+            this.triggerClickThrough();
+        })
+        this.controlsContainer.addEventListener('click', () => {
             this.triggerClickThrough();
         })
     }

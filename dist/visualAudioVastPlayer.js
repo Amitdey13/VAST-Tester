@@ -6754,7 +6754,8 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
     key: "addControlEvents",
     value: function addControlEvents() {
       var _this = this;
-      this.videoBtn.addEventListener('click', function () {
+      this.videoBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
         if (_this.videoPlayer.paused) {
           _this.videoPlayer.play();
           _this.videoBtn.innerHTML = pauseSvg;
@@ -6763,7 +6764,8 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
           _this.videoBtn.innerHTML = playSvg;
         }
       });
-      this.soundBtn.addEventListener('click', function () {
+      this.soundBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
         if (_this.audioPlayer.muted) {
           _this.audioPlayer.muted = false;
           _this.soundBtn.innerHTML = unmuteSvg;
@@ -6772,7 +6774,8 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
           _this.soundBtn.innerHTML = muteSvg;
         }
       });
-      this.replayBtn.addEventListener('click', function () {
+      this.replayBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
         if (_this.audioPlayer.currentTime > 0) {
           _this.audioPlayer.currentTime = 0;
           _this.videoPlayer.currentTime = 0;
@@ -6847,6 +6850,9 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
         _this2.triggerEvent('impression', index);
       });
       this.videoPlayer.addEventListener('click', function () {
+        _this2.triggerClickThrough();
+      });
+      this.controlsContainer.addEventListener('click', function () {
         _this2.triggerClickThrough();
       });
     }
