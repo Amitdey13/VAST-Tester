@@ -312,6 +312,10 @@ class VisualAudioVastPlayer {
         this.audioEvents.impressions?.forEach((_, index) => {
             this.triggerEvent('impression', index);
         });
+
+        this.videoPlayer.addEventListener('click', () => {
+            this.triggerClickThrough();
+        })
     }
 
     visualAudioSyncPlay() {
@@ -356,8 +360,37 @@ class VisualAudioVastPlayer {
     }
 
     triggerClickThrough() {
-        if (this.videoTrackingEvents.clickThrough.length > 0) {
-            window.open(this.videoTrackingEvents.clickThrough[0], '_blank');
+        if (this.audioEvents?.clickThroughs?.clickThrough?.uri) {
+            const clickThroughUri = this.audioEvents.clickThroughs.clickThrough.uri;
+            window.open(clickThroughUri, '_blank');
+            if (this.logger) {
+                const log = document.createElement('li');
+                const eventSpan = document.createElement('div');
+                eventSpan.innerHTML = `<strong>Event:</strong> clickThrough`;
+                const uriSpan = document.createElement('div');
+                uriSpan.innerHTML = `<strong>URL:</strong> ${clickThroughUri}`;
+                log.appendChild(eventSpan);
+                log.appendChild(uriSpan);
+                this.loggerList.appendChild(log);
+            }
+        }
+
+        if (this.audioEvents?.clickThroughs?.clickTrackings?.length > 0) {
+            this.audioEvents.clickThroughs.clickTrackings.forEach(
+                event => {
+                    fetch(event.uri, { method: 'GET', mode: "no-cors" })
+                    if (this.logger) {
+                        const log = document.createElement('li');
+                        const eventSpan = document.createElement('div');
+                        eventSpan.innerHTML = `<strong>Event:</strong> clickTrackings`;
+                        const uriSpan = document.createElement('div');
+                        uriSpan.innerHTML = `<strong>URL:</strong> ${event.uri}`;
+                        log.appendChild(eventSpan);
+                        log.appendChild(uriSpan);
+                        this.loggerList.appendChild(log);
+                    }
+                }
+            );
         }
     }
 }

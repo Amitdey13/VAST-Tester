@@ -6846,6 +6846,9 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
       (_this$audioEvents$imp = this.audioEvents.impressions) === null || _this$audioEvents$imp === void 0 || _this$audioEvents$imp.forEach(function (_, index) {
         _this2.triggerEvent('impression', index);
       });
+      this.videoPlayer.addEventListener('click', function () {
+        _this2.triggerClickThrough();
+      });
     }
   }, {
     key: "visualAudioSyncPlay",
@@ -6902,8 +6905,40 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
   }, {
     key: "triggerClickThrough",
     value: function triggerClickThrough() {
-      if (this.videoTrackingEvents.clickThrough.length > 0) {
-        window.open(this.videoTrackingEvents.clickThrough[0], '_blank');
+      var _this$audioEvents2,
+        _this$audioEvents3,
+        _this3 = this;
+      if ((_this$audioEvents2 = this.audioEvents) !== null && _this$audioEvents2 !== void 0 && (_this$audioEvents2 = _this$audioEvents2.clickThroughs) !== null && _this$audioEvents2 !== void 0 && (_this$audioEvents2 = _this$audioEvents2.clickThrough) !== null && _this$audioEvents2 !== void 0 && _this$audioEvents2.uri) {
+        var clickThroughUri = this.audioEvents.clickThroughs.clickThrough.uri;
+        window.open(clickThroughUri, '_blank');
+        if (this.logger) {
+          var log = document.createElement('li');
+          var eventSpan = document.createElement('div');
+          eventSpan.innerHTML = "<strong>Event:</strong> clickThrough";
+          var uriSpan = document.createElement('div');
+          uriSpan.innerHTML = "<strong>URL:</strong> ".concat(clickThroughUri);
+          log.appendChild(eventSpan);
+          log.appendChild(uriSpan);
+          this.loggerList.appendChild(log);
+        }
+      }
+      if (((_this$audioEvents3 = this.audioEvents) === null || _this$audioEvents3 === void 0 || (_this$audioEvents3 = _this$audioEvents3.clickThroughs) === null || _this$audioEvents3 === void 0 || (_this$audioEvents3 = _this$audioEvents3.clickTrackings) === null || _this$audioEvents3 === void 0 ? void 0 : _this$audioEvents3.length) > 0) {
+        this.audioEvents.clickThroughs.clickTrackings.forEach(function (event) {
+          fetch(event.uri, {
+            method: 'GET',
+            mode: "no-cors"
+          });
+          if (_this3.logger) {
+            var _log = document.createElement('li');
+            var _eventSpan = document.createElement('div');
+            _eventSpan.innerHTML = "<strong>Event:</strong> clickTrackings";
+            var _uriSpan = document.createElement('div');
+            _uriSpan.innerHTML = "<strong>URL:</strong> ".concat(event.uri);
+            _log.appendChild(_eventSpan);
+            _log.appendChild(_uriSpan);
+            _this3.loggerList.appendChild(_log);
+          }
+        });
       }
     }
   }]);
