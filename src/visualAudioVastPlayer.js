@@ -382,7 +382,7 @@ class VisualAudioVastPlayer {
                     if (this.logger) {
                         const log = document.createElement('li');
                         const eventSpan = document.createElement('div');
-                        eventSpan.innerHTML = `<strong>Event:</strong> clickTrackings`;
+                        eventSpan.innerHTML = `<strong>Event:</strong> ClickTracking`;
                         const uriSpan = document.createElement('div');
                         uriSpan.innerHTML = `<strong>URL:</strong> ${event.uri}`;
                         log.appendChild(eventSpan);
