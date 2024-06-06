@@ -6931,7 +6931,7 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
           if (_this3.logger) {
             var _log = document.createElement('li');
             var _eventSpan = document.createElement('div');
-            _eventSpan.innerHTML = "<strong>Event:</strong> clickTrackings";
+            _eventSpan.innerHTML = "<strong>Event:</strong> ClickTracking";
             var _uriSpan = document.createElement('div');
             _uriSpan.innerHTML = "<strong>URL:</strong> ".concat(event.uri);
             _log.appendChild(_eventSpan);
