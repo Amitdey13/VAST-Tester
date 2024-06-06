@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAST Loader Example</title>
+    <style>
+
+        .cont_1 {
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: #ccc;
+            display: flex;
+        }
+        .cont_2 {
+            padding: 10px;
+            margin-top: 10px;
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: #ccc;
+            display: flex;
+            width: calc(100% - 20px);
+            min-height: 400px;
+        }
+        
+        .cont_1 .details {
+            width: 100%;
+            padding: 15px
+        }
+
+        .cont_1 #custom_vast {
+            margin-top: 15px;
+            background-color: #eee;
+            height: 300px;
+            width: calc(100% - 30px);
+            border-radius: 10px;
+            padding: 10px 15px;
+            overflow: scroll;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-left: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        #visual_audio_slot {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        #vastForm {
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #vastForm p {
+            margin: 0;
+        }
+
+        #vastForm label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #vastForm textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        #vastForm input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="number"] {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="radio"],
+        #vastForm input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        #vastForm button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #vastForm button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cont_1">
+        <form id="vastForm">
+            <div style="display: flex; margin-bottom: 10px;">
+                <label style="margin-right: 10px;" for="vastUrl">Log enable:</label>
+                <input type="checkbox" id="vastLog" checked />
+            </div>
+            <button type="submit">Test Ad</button>
+        </form>
+        <!-- <div class="details">
+            <span><strong>Ad Slot Tag:</strong> visual_audio_slot</span>
+            <div id="custom_vast">Custom vast</div>
+        </div> -->
+    </div>
+    <div class="cont_2">
+        <div id="visual_audio_slot">
+            <script src="dist/visualAudioPlayer.js"></script>
+            <script defer>
+                document.getElementById('vastForm').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    getAndRunCustomVast();
+                })
+    
+                async function getAndRunCustomVast() {
+                    const visualAudioPlayerDiv = document.getElementById('visual_audio_vast_player');
+                    if (visualAudioPlayerDiv) {
+                        visualAudioPlayerDiv.remove();
+                    }
+                    const ulElement = document.getElementById('visual_audio_slot').querySelector('ul');
+                    if (ulElement) {
+                        ulElement.remove();
+                    }
+                    const payload = {
+                        audio_vast_xml: `<VAST version="4.1">
+                        <Ad id="va-vast-1">
+                        <InLine>
+                        <AdSystem>Sample Ad System</AdSystem>
+                        <AdTitle>Sample Linear Audio Ad</AdTitle>
+                        <Description>
+                        <![CDATA[ Test adTag for Audio Linear Ad ]]>
+                        </Description>
+                        <Category>IAB1-1</Category>
+                        <Category>IAB1-5</Category>
+                        <Category>IAB11-4</Category>
+                        <Impression>
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=impression ]]>
+                        </Impression>
+                        <Impression>
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=impression_2 ]]>
+                        </Impression>
+                        <Impression>
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=impression_3 ]]>
+                        </Impression>
+                        <Creatives>
+                        <Creative>
+                        <Linear>
+                        <Duration>00:00:50</Duration>
+                        <TrackingEvents>
+                        <Tracking event="start">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=start ]]>
+                        </Tracking>
+                        <Tracking event="firstQuartile">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=firstQuartile ]]>
+                        </Tracking>
+                        <Tracking event="midpoint">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=midpoint ]]>
+                        </Tracking>
+                        <Tracking event="thirdQuartile">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=thirdQuartile ]]>
+                        </Tracking>
+                        <Tracking event="complete">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=complete ]]>
+                        </Tracking>
+                        <Tracking event="mute">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=mute ]]>
+                        </Tracking>
+                        <Tracking event="unmute">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=unmute ]]>
+                        </Tracking>
+                        <Tracking event="rewind">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=rewind ]]>
+                        </Tracking>
+                        <Tracking event="pause">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=pause ]]>
+                        </Tracking>
+                        <Tracking event="resume">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=resume ]]>
+                        </Tracking>
+                        <Tracking event="fullscreen">
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=fullscreen ]]>
+                        </Tracking>
+                        </TrackingEvents>
+                        <VideoClicks>
+                        <ClickThrough>
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=clickthrough ]]>
+                        </ClickThrough>
+                        <ClickTracking>
+                        <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=click ]]>
+                        </ClickTracking>
+                        </VideoClicks>
+                        <MediaFiles>
+                        <MediaFile delivery="progressive" type="audio/mpeg" bitrate="128" width="0" height="0" scalable="true" maintainAspectRatio="true">
+                        <![CDATA[ https://visual-audio.s3.amazonaws.com/audio-library/audio_iab7.mp3 ]]>
+                        </MediaFile>
+                        </MediaFiles>
+                        </Linear>
+                        </Creative>
+                        </Creatives>
+                        </InLine>
+                        </Ad>
+                        </VAST>`
+                    }
+                    let customVast = null;
+                    // document.getElementById('custom_vast').innerText = "Generating custom vast...";
+                    await fetch('https://visual-audio-engine.digitalavenues.net//api/get-custom-vast', {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                        .then(response => { console.log(response); return response.text() })
+                        .then(data => {
+                            customVast = data;
+                            // document.getElementById('custom_vast').innerText = data;
+                        })
+                        .catch(error => console.error('Error:', error));
+                    const divId = "visual_audio_slot";
+                    const height = 300;
+                    const width = 500;
+                    const vastLog = document.getElementById('vastLog').checked;
+                    new VisualAudioVastPlayer(customVast, divId, height, width, vastLog);
+                }
+            </script>
+        </div>
+    </div>
+    <script src="dist/visualAudioVastPlayer.js"></script>
+</body>
+
+</html>
