@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAST Loader Example</title>
+    <style>
+
+        .cont_1 {
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: #ccc;
+            display: flex;
+        }
+        .cont_2 {
+            padding: 10px;
+            margin-top: 10px;
+            border: 2px solid;
+            border-radius: 10px;
+            border-color: #ccc;
+            display: flex;
+            width: calc(100% - 20px);
+            min-height: 400px;
+        }
+        
+        .cont_1 .details {
+            width: 100%;
+            padding: 15px
+        }
+
+        .cont_1 #custom_vast {
+            margin-top: 15px;
+            background-color: #eee;
+            height: 300px;
+            width: calc(100% - 30px);
+            border-radius: 10px;
+            padding: 10px 15px;
+            overflow: scroll;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin-left: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        li {
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+
+        #visual_audio_slot {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        #vastForm {
+            padding: 20px;
+            max-width: 400px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #vastForm p {
+            margin: 0;
+        }
+
+        #vastForm label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #vastForm textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: none;
+        }
+
+        #vastForm input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="number"] {
+            width: calc(50% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #vastForm input[type="radio"],
+        #vastForm input[type="checkbox"] {
+            cursor: pointer;
+        }
+
+        #vastForm button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #vastForm button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cont_1">
+        <form id="vastForm">
+            <div style="display: flex; margin-bottom: 10px;">
+                <label style="margin-right: 10px;" for="vastUrl">Log enable:</label>
+                <input type="checkbox" id="vastLog" checked />
+            </div>
+            <button type="submit">Test Ad</button>
+        </form>
+    </div>
+    <div class="cont_2" id="cont2">
+        
+    </div>
+    <script defer>
+        document.getElementById('vastForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const previousAdScript = document.getElementById('ad_script');
+            if (previousAdScript) {
+                previousAdScript.remove();
+            }
+            const cont2 = document.getElementById('cont2');
+            const scriptTag = document.createElement('script');
+            scriptTag.src = 'adPlayer.js';
+            scriptTag.type = 'type/javascript';
+            scriptTag.id = 'ad_script';
+            cont2.appendChild(scriptTag);
+            scriptTag.onload = function() {
+                getAndRunCustomVast();
+            }
+        })
+    </script>
+</body>
+
+</html>

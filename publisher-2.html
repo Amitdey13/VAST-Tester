@@ -155,13 +155,6 @@
     
                 async function getAndRunCustomVast() {
                     const visualAudioPlayerDiv = document.getElementById('visual_audio_vast_player');
-                    if (visualAudioPlayerDiv) {
-                        visualAudioPlayerDiv.remove();
-                    }
-                    const ulElement = document.getElementById('visual_audio_slot').querySelector('ul');
-                    if (ulElement) {
-                        ulElement.remove();
-                    }
                     const payload = {
                         audio_vast_xml: `<VAST version="4.1">
                         <Ad id="va-vast-1">
@@ -263,6 +256,7 @@
                     const vastLog = document.getElementById('vastLog').checked;
                     new VisualAudioVastPlayer(customVast, divId, height, width, vastLog);
                 }
+
             </script>
         </div>
     </div>
