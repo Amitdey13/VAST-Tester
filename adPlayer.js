@@ -12,88 +12,27 @@ function getAndRunCustomVast() {
         console.log('Error loading script.');
     };
     scriptTag.onload = async function () {
+        const ads = [
+            "https://od-spy.live.streamtheworld.com/ondemand/ars?stid=1031633&type=preroll",
+            "https://od-spy.live.streamtheworld.com/ondemand/ars?stid=1031633&type=preroll&scenario=vast-multiple-media"
+        ]
+        function getRandomAd() {
+            const randomIndex = Math.floor(Math.random() * ads.length);
+            return ads[randomIndex];
+        }
+        const params = { audio_vast_url: getRandomAd() }
+        let audio_vast_xml = null
+        await fetch(`https://visual-audio-engine.digitalavenues.net/api/get-audio-vast-xml?${new URLSearchParams(params).toString()}`)
+        .then(response => { console.log(response); return response.text() })
+            .then(data => {
+                audio_vast_xml = data;
+            })
+            .catch(error => console.error('Error:', error));
         const payload = {
-            audio_vast_xml: `<VAST version="4.1">
-            <Ad id="va-vast-1">
-            <InLine>
-            <AdSystem>Sample Ad System</AdSystem>
-            <AdTitle>Sample Linear Audio Ad</AdTitle>
-            <Description>
-            <![CDATA[ Test adTag for Audio Linear Ad ]]>
-            </Description>
-            <Category>IAB1-1</Category>
-            <Category>IAB1-5</Category>
-            <Category>IAB11-4</Category>
-            <Impression>
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=impression ]]>
-            </Impression>
-            <Impression>
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=impression_2 ]]>
-            </Impression>
-            <Impression>
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=impression_3 ]]>
-            </Impression>
-            <Creatives>
-            <Creative>
-            <Linear>
-            <Duration>00:00:50</Duration>
-            <TrackingEvents>
-            <Tracking event="start">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=start ]]>
-            </Tracking>
-            <Tracking event="firstQuartile">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=firstQuartile ]]>
-            </Tracking>
-            <Tracking event="midpoint">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=midpoint ]]>
-            </Tracking>
-            <Tracking event="thirdQuartile">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=thirdQuartile ]]>
-            </Tracking>
-            <Tracking event="complete">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=complete ]]>
-            </Tracking>
-            <Tracking event="mute">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=mute ]]>
-            </Tracking>
-            <Tracking event="unmute">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=unmute ]]>
-            </Tracking>
-            <Tracking event="rewind">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=rewind ]]>
-            </Tracking>
-            <Tracking event="pause">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=pause ]]>
-            </Tracking>
-            <Tracking event="resume">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=resume ]]>
-            </Tracking>
-            <Tracking event="fullscreen">
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=fullscreen ]]>
-            </Tracking>
-            </TrackingEvents>
-            <VideoClicks>
-            <ClickThrough>
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=clickthrough ]]>
-            </ClickThrough>
-            <ClickTracking>
-            <![CDATA[ https://ywvvk4z447ggxbectpbo5woksa0nfsds.lambda-url.us-east-1.on.aws/?adid=8228714f-00c3-47eb-88f9-07f2bef3b6a1&type=click ]]>
-            </ClickTracking>
-            </VideoClicks>
-            <MediaFiles>
-            <MediaFile delivery="progressive" type="audio/mpeg" bitrate="128" width="0" height="0" scalable="true" maintainAspectRatio="true">
-            <![CDATA[ https://visual-audio.s3.amazonaws.com/audio-library/audio_iab7.mp3 ]]>
-            </MediaFile>
-            </MediaFiles>
-            </Linear>
-            </Creative>
-            </Creatives>
-            </InLine>
-            </Ad>
-            </VAST>`
+            audio_vast_xml: audio_vast_xml
         }
         let customVast = null;
-        await fetch('https://visual-audio-engine.digitalavenues.net//api/get-custom-vast', {
+        await fetch('https://visual-audio-engine.digitalavenues.net/api/get-custom-vast', {
             method: 'POST',
             body: JSON.stringify(payload),
             headers: {
