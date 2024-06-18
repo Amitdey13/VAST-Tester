@@ -8,9 +8,10 @@ const unmuteSvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="21
 const replaySvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 512 512"><path fill="#ffffff" d="M0 224c0 17.7 14.3 32 32 32s32-14.3 32-32c0-53 43-96 96-96H320v32c0 12.9 7.8 24.6 19.8 29.6s25.7 2.2 34.9-6.9l64-64c12.5-12.5 12.5-32.8 0-45.3l-64-64c-9.2-9.2-22.9-11.9-34.9-6.9S320 19.1 320 32V64H160C71.6 64 0 135.6 0 224zm512 64c0-17.7-14.3-32-32-32s-32 14.3-32 32c0 53-43 96-96 96H192V352c0-12.9-7.8-24.6-19.8-29.6s-25.7-2.2-34.9 6.9l-64 64c-12.5 12.5-12.5 32.8 0 45.3l64 64c9.2 9.2 22.9 11.9 34.9 6.9s19.8-16.6 19.8-29.6V448H352c88.4 0 160-71.6 160-160z"/></svg>';
 
 class VisualAudioVastPlayer {
-    constructor(vastString, addSlot, height, width, log = false) {
+    constructor(vastString, addSlot, height, width, log = false, autoPlay=false) {
         this.vastUrl = `data:text/xml;base64,${btoa(vastString)}`;
         this.logger = log;
+        this.autoPlay = autoPlay;
         this.addSlot = addSlot;
         this.videoHeight = height;
         this.videoWidth = width;
@@ -21,20 +22,20 @@ class VisualAudioVastPlayer {
         this.audioSrc = null;
         this.audioPaused = false;
         this.isLooped = false;
-        this.timeElasped = { firstQuartile: false, midpoint: false, thirdQuartile: false }
+        this.timeElasped = { start: false, firstQuartile: false, midpoint: false, thirdQuartile: false, complete: false }
         this.initializePlayers();
     }
 
     async initializePlayers() {
         try {            
             await this.loadVastData();
-            console.log({
-                parsedXmlData: this.parsedXmlData,
-                audioInlineVastData: this.audioInlineVastData,
-                audioEvents: this.audioEvents,
-                videoSrc: this.videoSrc,
-                audioSrc: this.audioSrc
-            });
+            // console.log({
+            //     parsedXmlData: this.parsedXmlData,
+            //     audioInlineVastData: this.audioInlineVastData,
+            //     audioEvents: this.audioEvents,
+            //     videoSrc: this.videoSrc,
+            //     audioSrc: this.audioSrc
+            // });
             this.validateParameters();
             this.createVideoPlayer();
             this.createAudioPlayer();
@@ -55,7 +56,7 @@ class VisualAudioVastPlayer {
             this.parsedXmlData = await this.fetchVastData(this.vastUrl);
             const _vastType = this.checkVastType();
             const _tmpAudioInlineVast = this.getAdFromVast('InLine', warn, this.parsedXmlData[this.parsedXmlData.length - 1]);
-            console.log(this.parsedXmlData, _tmpAudioInlineVast);
+            // console.log(this.parsedXmlData, _tmpAudioInlineVast);
             this.audioInlineVastData = xmlToJSON(_tmpAudioInlineVast);
             const _tmpAudioLinearVast = this.getLinearFromInLine(_tmpAudioInlineVast, warn);
             this.audioEvents = this.getTrackingEvents(_tmpAudioLinearVast);
@@ -77,7 +78,7 @@ class VisualAudioVastPlayer {
 
     checkVastType() {
         const _ads = xmlToJSON(this.parsedXmlData[0])?.ads;
-        console.log(_ads);
+        // console.log(_ads);
         if (!_ads?.length) {
             throw new Error('No Ad element found in VAST XML');
         }
@@ -257,7 +258,6 @@ class VisualAudioVastPlayer {
                 this.audioPlayer.currentTime = 0;
                 this.videoPlayer.currentTime = 0;
                 this.triggerEvent('rewind');
-                this.timeElasped = { firstQuartile: false, midpoint: false, thirdQuartile: false };
             }
         });
     }
@@ -269,7 +269,11 @@ class VisualAudioVastPlayer {
         
         this.audioPlayer.addEventListener('play', () => {
             if (!this.audioPaused) {
-                this.triggerEvent('start');
+                if (!this.timeElasped.start) {
+                    this.triggerEvent('start');
+                    this.timeElasped.start = true;
+                }
+
             } else {
                 this.triggerEvent('resume');
                 this.audioPaused = false;
@@ -289,7 +293,10 @@ class VisualAudioVastPlayer {
             }
         });
         this.audioPlayer.addEventListener('ended', () => {
-            this.triggerEvent('complete');
+            if (!this.timeElasped.complete) {
+                this.triggerEvent('complete');
+                this.timeElasped.complete = true;
+            }
             if (!this.videoPlayer.paused) {
                 this.videoPlayer.pause();
                 this.videoBtn.innerHTML = playSvg;
@@ -322,6 +329,17 @@ class VisualAudioVastPlayer {
         this.controlsContainer.addEventListener('click', () => {
             this.triggerClickThrough();
         })
+
+        if (this.autoPlay) {
+            this.videoPlayer.addEventListener('canplay', () => {
+                if (this.videoPlayer.paused) {
+                    this.audioPlayer.play().then(() => {
+                        this.videoPlayer.play();
+                        this.videoBtn.innerHTML = pauseSvg;
+                    })
+                }
+            })  
+        }
     }
 
     visualAudioSyncPlay() {

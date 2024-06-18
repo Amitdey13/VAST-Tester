@@ -1,11 +1,14 @@
 document.onload = getAndRunCustomVast();
 
 function getAndRunCustomVast() {
+    const loading = document.createElement('span');
+    loading.innerText = 'Loading...';
     const parentElement = document.currentScript.parentNode;
+    parentElement.appendChild(loading);
     const adSlot = document.createElement('div');
     adSlot.id = 'visual_audio_slot';
     const scriptTag = document.createElement('script');
-    scriptTag.src = 'https://visual-audio.s3.amazonaws.com/dist/visualAudioVastPlayer.js';
+    scriptTag.src = './dist/visualAudioVastPlayer.js';
     scriptTag.defer = true;
     
     scriptTag.onerror = function() {
@@ -48,7 +51,10 @@ function getAndRunCustomVast() {
         const height = 300;
         const width = 500;
         const vastLog = document.getElementById('vastLog').checked;
-        new VisualAudioVastPlayer(customVast, divId, height, width, vastLog);
+        const autoPlay = document.getElementById('autoPlay').checked;
+        parentElement.removeChild(loading);
+        console.log(autoPlay);
+        new VisualAudioVastPlayer(customVast, divId, height, width, vastLog, autoPlay);
     }
     parentElement.appendChild(adSlot);
     parentElement.appendChild(scriptTag);

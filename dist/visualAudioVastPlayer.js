@@ -6448,9 +6448,11 @@ var replaySvg = '<svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" 
 var VisualAudioVastPlayer = /*#__PURE__*/function () {
   function VisualAudioVastPlayer(vastString, addSlot, height, width) {
     var log = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+    var autoPlay = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : false;
     _classCallCheck(this, VisualAudioVastPlayer);
     this.vastUrl = "data:text/xml;base64,".concat(btoa(vastString));
     this.logger = log;
+    this.autoPlay = autoPlay;
     this.addSlot = addSlot;
     this.videoHeight = height;
     this.videoWidth = width;
@@ -6462,9 +6464,11 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
     this.audioPaused = false;
     this.isLooped = false;
     this.timeElasped = {
+      start: false,
       firstQuartile: false,
       midpoint: false,
-      thirdQuartile: false
+      thirdQuartile: false,
+      complete: false
     };
     this.initializePlayers();
   }
@@ -6479,13 +6483,13 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
               _context.next = 3;
               return this.loadVastData();
             case 3:
-              console.log({
-                parsedXmlData: this.parsedXmlData,
-                audioInlineVastData: this.audioInlineVastData,
-                audioEvents: this.audioEvents,
-                videoSrc: this.videoSrc,
-                audioSrc: this.audioSrc
-              });
+              // console.log({
+              //     parsedXmlData: this.parsedXmlData,
+              //     audioInlineVastData: this.audioInlineVastData,
+              //     audioEvents: this.audioEvents,
+              //     videoSrc: this.videoSrc,
+              //     audioSrc: this.audioSrc
+              // });
               this.validateParameters();
               this.createVideoPlayer();
               this.createAudioPlayer();
@@ -6496,17 +6500,17 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
               }
               this.addEventListeners();
               this.addControlEvents();
-              _context.next = 17;
+              _context.next = 16;
               break;
-            case 14:
-              _context.prev = 14;
+            case 13:
+              _context.prev = 13;
               _context.t0 = _context["catch"](0);
               console.error(_context.t0);
-            case 17:
+            case 16:
             case "end":
               return _context.stop();
           }
-        }, _callee, this, [[0, 14]]);
+        }, _callee, this, [[0, 13]]);
       }));
       function initializePlayers() {
         return _initializePlayers.apply(this, arguments);
@@ -6527,24 +6531,23 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
             case 3:
               this.parsedXmlData = _context2.sent;
               _vastType = this.checkVastType();
-              _tmpAudioInlineVast = this.getAdFromVast('InLine', _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.parsedXmlData[this.parsedXmlData.length - 1]);
-              console.log(this.parsedXmlData, _tmpAudioInlineVast);
+              _tmpAudioInlineVast = this.getAdFromVast('InLine', _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.parsedXmlData[this.parsedXmlData.length - 1]); // console.log(this.parsedXmlData, _tmpAudioInlineVast);
               this.audioInlineVastData = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(_tmpAudioInlineVast);
               _tmpAudioLinearVast = this.getLinearFromInLine(_tmpAudioInlineVast, _utils__WEBPACK_IMPORTED_MODULE_1__.warn);
               this.audioEvents = this.getTrackingEvents(_tmpAudioLinearVast);
               this.videoSrc = this.getMediaFileUrl((0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(this.getVideoLinearFromInLine(this.getAdFromVast(_vastType, _utils__WEBPACK_IMPORTED_MODULE_1__.warn, this.parsedXmlData[0]), _utils__WEBPACK_IMPORTED_MODULE_1__.warn)).mediaFiles);
               this.audioSrc = this.getMediaFileUrl((_xmlToJSON = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(_tmpAudioLinearVast)) === null || _xmlToJSON === void 0 ? void 0 : _xmlToJSON.mediaFiles);
-              _context2.next = 17;
+              _context2.next = 16;
               break;
-            case 14:
-              _context2.prev = 14;
+            case 13:
+              _context2.prev = 13;
               _context2.t0 = _context2["catch"](0);
               console.error(_context2.t0);
-            case 17:
+            case 16:
             case "end":
               return _context2.stop();
           }
-        }, _callee2, this, [[0, 14]]);
+        }, _callee2, this, [[0, 13]]);
       }));
       function loadVastData() {
         return _loadVastData.apply(this, arguments);
@@ -6587,7 +6590,7 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
     value: function checkVastType() {
       var _xmlToJSON2;
       var _ads = (_xmlToJSON2 = (0,_utils__WEBPACK_IMPORTED_MODULE_1__.xmlToJSON)(this.parsedXmlData[0])) === null || _xmlToJSON2 === void 0 ? void 0 : _xmlToJSON2.ads;
-      console.log(_ads);
+      // console.log(_ads);
       if (!(_ads !== null && _ads !== void 0 && _ads.length)) {
         throw new Error('No Ad element found in VAST XML');
       }
@@ -6780,11 +6783,6 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
           _this.audioPlayer.currentTime = 0;
           _this.videoPlayer.currentTime = 0;
           _this.triggerEvent('rewind');
-          _this.timeElasped = {
-            firstQuartile: false,
-            midpoint: false,
-            thirdQuartile: false
-          };
         }
       });
     }
@@ -6804,7 +6802,10 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
       });
       this.audioPlayer.addEventListener('play', function () {
         if (!_this2.audioPaused) {
-          _this2.triggerEvent('start');
+          if (!_this2.timeElasped.start) {
+            _this2.triggerEvent('start');
+            _this2.timeElasped.start = true;
+          }
         } else {
           _this2.triggerEvent('resume');
           _this2.audioPaused = false;
@@ -6824,7 +6825,10 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
         }
       });
       this.audioPlayer.addEventListener('ended', function () {
-        _this2.triggerEvent('complete');
+        if (!_this2.timeElasped.complete) {
+          _this2.triggerEvent('complete');
+          _this2.timeElasped.complete = true;
+        }
         if (!_this2.videoPlayer.paused) {
           _this2.videoPlayer.pause();
           _this2.videoBtn.innerHTML = playSvg;
@@ -6855,6 +6859,16 @@ var VisualAudioVastPlayer = /*#__PURE__*/function () {
       this.controlsContainer.addEventListener('click', function () {
         _this2.triggerClickThrough();
       });
+      if (this.autoPlay) {
+        this.videoPlayer.addEventListener('canplay', function () {
+          if (_this2.videoPlayer.paused) {
+            _this2.audioPlayer.play().then(function () {
+              _this2.videoPlayer.play();
+              _this2.videoBtn.innerHTML = pauseSvg;
+            });
+          }
+        });
+      }
     }
   }, {
     key: "visualAudioSyncPlay",
